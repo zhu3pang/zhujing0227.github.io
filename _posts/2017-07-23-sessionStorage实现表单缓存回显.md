@@ -14,6 +14,8 @@ html5中的Web Storage包含了两种方式：sessionStorage和localStorage。
 <!--more-->
 <!--more-->
 
+----------
+
 ### localStorage和sessionStorage的方法
 
 - setItem存储value
@@ -31,9 +33,9 @@ html5中的Web Storage包含了两种方式：sessionStorage和localStorage。
 用途：删除指定key本地存储的值
 `sessionStorage.removeItem("key");     localStorage.removeItem("key");`
 
-- clear清除所有的key
+- clear删除所有的key
 
-用途：清楚所有的key本地存储的值
+用途：删除所有的key本地存储的值
 `sessionStorage.clear();        localStorage.clear();`
 
 - `.`号操作符和`[]`运算
@@ -53,6 +55,8 @@ window.addEventListener('storage', function(e){
     console.log(e);
 });
 ```
+
+----------
 
 ### 应用 页面数据存储、获取及清除
 
@@ -117,6 +121,8 @@ function clearSessionStorage(){
     window.sessionStorage.clear();
 }
 ```
+
+----------
 
 ### 数组方式存储sessionStorage的value
 
