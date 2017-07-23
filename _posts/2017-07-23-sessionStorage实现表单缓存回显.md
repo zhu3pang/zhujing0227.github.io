@@ -1,8 +1,8 @@
 ---
 layout: post
-title: essionStorage实现表单缓存回显
+title: sessionStorage实现表单缓存回显
 tags: html5
-eye_catch: http://jekyllrb.com/img/logo-2x.png
+#eye_catch: http://jekyllrb.com/img/logo-2x.png
 ---
 html5中的Web Storage包含了两种方式：sessionStorage和localStorage。
 
@@ -31,10 +31,17 @@ html5中的Web Storage包含了两种方式：sessionStorage和localStorage。
 用途：删除指定key本地存储的值
 `sessionStorage.removeItem("key");     localStorage.removeItem("key");`
 
-- clear清楚所有的key
+- clear清除所有的key
 
 用途：清楚所有的key本地存储的值
 `sessionStorage.clear();        localStorage.clear();`
+
+- `.`号操作符和`[]`运算
+
+用途：类似setItem和getItem
+`window.sessionStorage.storageKey = object;     window.sessionStorage[storageKey] = object;`    设置值
+
+`var object = window.sessionStorage.storageKey;     var object = window.sessionStorage.[storageKey]`    取值
 
 - storage事件
 
