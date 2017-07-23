@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 2017-07-23-sessionStorage实现表单缓存回显
+title: essionStorage实现表单缓存回显
 tags: html5
 eye_catch: http://jekyllrb.com/img/logo-2x.png
 ---
@@ -11,6 +11,8 @@ html5中的Web Storage包含了两种方式：sessionStorage和localStorage。
 **sessionStorage**用于存本地存储一次会话（session）中的数据，这些数据只能在同一个会话中的页面才能访问，会话结束数据也随之销毁。sessionStorage不是一种持久化得本地存储，仅仅是会话级别的存储。
 
 **localStorage**用于持久化的本地存储，除非主动删除数据，否则数据永不过期。
+<!--more-->
+<!--more-->
 
 ### localStorage和sessionStorage的方法
 
@@ -111,7 +113,7 @@ function clearSessionStorage(){
 
 ### 数组方式存储sessionStorage的value
 
-[HTML5 sessionStorage](http://www.cnblogs.com/Ricky-Huang/p/5736623.html)
+> [HTML5 sessionStorage](http://www.cnblogs.com/Ricky-Huang/p/5736623.html)
 
 ```javaScript
 /*保存表单数据到sessionStorage*/
