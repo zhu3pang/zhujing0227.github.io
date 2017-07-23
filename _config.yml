@@ -6,10 +6,10 @@
 url: http://zhujing0227.github.io
 baseurl: /
 title: zhujing的博客
-description: Some descriptions of yourself.
-avatar: /assets/img/ogp.png
+description: 嘻嘻哈哈学技术
+avatar: /assets/img/panghu.jpg
 # favicon: /favicon.ico
-favicon: /assets/img/ogp.png
+favicon: /assets/img/panghu.jpg
 # language: ja
 language: en
 
@@ -17,11 +17,11 @@ language: en
 # Icons
 #
 icons:
-  rss: true
+  rss: false
   email:
-  github: ttskch
+  github: zhujing0227
   bitbucket:
-  twitter: ttskch
+  twitter: #ttskch
   facebook:
   google_plus:
   tumblr:

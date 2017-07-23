@@ -6,6 +6,16 @@ order: 1
 share: false
 ---
 
-[TtskchTheme](https://github.com/ttskch/jekyll-ttskch-theme) is a free and open-source theme for [Jekyll](http://jekyllrb.com/), licensed under the MIT License.
+## 关于
+--------
 
-Enjoy! :smiley:
+### 自我介绍
+
+爱猫搬砖人士
+
+--------
+
+### 联系方式：
+
+Email: 497886999@qq.com
+Github: [https://github.com/zhujing0227](https://github.com/zhujing0227)
