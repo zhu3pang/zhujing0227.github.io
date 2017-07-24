@@ -6,7 +6,7 @@ order: 2
 share: false
 ---
 
-<ul class="inline">
+<ul class="">
     {% for tag in site.tags %}
     <li><a href="{{ '/search/?t=' | prepend: site.baseurl }}{{ tag[0] }}">#{{ tag[0] }}</a></li>
     {% endfor %}
