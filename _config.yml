@@ -117,3 +117,7 @@ exclude:
   - LICENSE
   - README.md
   - vendor
+
+
+plugins:
+  hexo-math
