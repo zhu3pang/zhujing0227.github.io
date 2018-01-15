@@ -119,5 +119,5 @@ exclude:
   - vendor
 
 
-plugins:
+plugin_dir:
   hexo-math
