@@ -10,7 +10,7 @@ lombok是在编译期间生成的字节码,不会影响程序的运行性能,**[
 
 常用的几个注解
 
-@Data   ：注解在类上；提供类所有属性的 getter 和 setter 方法，此外还提供了equals、canEqual、hashCode、toString 方法
+@Data   ：注解在类上；提供类所有属性的 getter 和 setter 方法, 此外还提供了equals、canEqual、hashCode、toString 方法
 
 @Accessors(chain=true,fluent=true):链式调用,当chain=true时,只是链式调用;当fluent=true时,getter/setter方法前面没有get/set
 

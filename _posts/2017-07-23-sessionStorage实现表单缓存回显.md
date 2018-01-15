@@ -5,13 +5,13 @@ tags: html5
 category: html5
 #eye_catch: http://jekyllrb.com/img/logo-2x.png
 ---
-html5中的Web Storage包含了两种方式：sessionStorage和localStorage。
+html5中的Web Storage包含了两种方式：sessionStorage和localStorage.
 
 ### sessionStorage和localStorage的区别
 
-**sessionStorage**用于存本地存储一次会话（session）中的数据，这些数据只能在同一个会话中的页面才能访问，会话结束数据也随之销毁。sessionStorage不是一种持久化得本地存储，仅仅是会话级别的存储。
+**sessionStorage**用于存本地存储一次会话（session）中的数据, 这些数据只能在同一个会话中的页面才能访问, 会话结束数据也随之销毁.sessionStorage不是一种持久化得本地存储, 仅仅是会话级别的存储.
 
-**localStorage**用于持久化的本地存储，除非主动删除数据，否则数据永不过期。
+**localStorage**用于持久化的本地存储, 除非主动删除数据, 否则数据永不过期.
 <!--more-->
 <!--more-->
 
@@ -48,7 +48,7 @@ html5中的Web Storage包含了两种方式：sessionStorage和localStorage。
 
 - storage事件
 
-storage还提供了storage事件，当键值对改变或者clear的时候会触发storage事件
+storage还提供了storage事件, 当键值对改变或者clear的时候会触发storage事件
 
 ```javaScript
 window.addEventListener('storage', function(e){
@@ -64,7 +64,7 @@ window.addEventListener('storage', function(e){
 - 保存表单数据到sessionStorage
 
 ```javaScript
-function saveDataToStorage(pageName){   //pageName为每个页面独特的名称，用于区别各页面的数据，在storage中用作key
+function saveDataToStorage(pageName){   //pageName为每个页面独特的名称, 用于区别各页面的数据, 在storage中用作key
     var history = {};
     for(var i=0; i&lt;$('form input').length; i++){
         var key = $($('form input')[i]).attr('name');
@@ -115,7 +115,7 @@ function fillSessionStorage(pageName){
 }
 ```
 
-- 清除sessionStorage内的所有数据，在需要失效的时机手动调用
+- 清除sessionStorage内的所有数据, 在需要失效的时机手动调用
 
 ```javaScript
 function clearSessionStorage(){

@@ -14,6 +14,6 @@ share: false
 
 ### 联系方式：
 
-Email: 497886999@qq.com
+Email: zhujing0227@gmail.com
 
 Github: [https://github.com/zhujing0227](https://github.com/zhujing0227)
