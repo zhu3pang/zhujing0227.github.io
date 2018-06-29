@@ -22,10 +22,6 @@ EXEC
 - spring-redis+lua脚本实现代码
 
 ```Java
-/**
- * @author zhuji on 2018/6/29
- */
-
 @Component
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class RedisPriorityQueue {
