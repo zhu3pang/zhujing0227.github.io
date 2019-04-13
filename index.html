@@ -1,26 +1,109 @@
 ---
-layout: default
+layout: page
+tagline:
 ---
 
 {% for post in paginator.posts %}
-<div class="article-wrapper">
-    <article>
-    {% include article-header.html page=post link=true %}
-        <section class="post-content">
-            {% assign size = post.content | split: site.excerpt_separator | size %}
-            {% if size > 1 %}
-            {{ post.excerpt }}
-            <a class="btn" href="{{ post.url | prepend: site.baseurl }}">{{ site.str_read_more }}</a>
-            {% else %}
-            {{ post.content }}
-            {% endif %}
-        </section>
-    </article>
-</div>
+<article class="home">
 
-{% if forloop.last != true %}
-<hr/>
-{% endif %}
+  <h3>
+    <a href="{{ site.BASE_PATH }}{{ post.url }}">{{ post.title }}</a>
+  </h3>
+
+  <div>
+    <ul class="tag_box list-unstyled list-inline">
+        <span class="post-date">
+              {{ post.date | date: "%Y-%m-%d" }}
+        </span>
+  
+        {% unless post.categories == empty %}
+        <li><i class="fa fa-folder-open"></i></li>
+        {% assign categories_list = post.categories %}
+        {% if categories_list.first[0] == null %}
+        {% for category in categories_list %} 
+          <li><a href="{{ site.BASE_PATH }}/{{ site.categories_path }}#{{ category }}-ref">
+            {{ category | join: "/" }} <span>({{ site.categories[category].size }})</span>
+            {% unless forloop.last %},{% endunless %}
+          </a></li>
+        {% endfor %}
+        {% else %}
+        {% for category in categories_list %} 
+          <li><a href="{{ site.BASE_PATH }}/{{ site.categories_path }}#{{ category[0] }}-ref">
+            {{ category[0] | join: "/" }} <span>/{{ category[1].size }})</span>
+          </a></li>
+        {% endfor %}
+        {% endif %}
+        {% endunless %}
+  
+        {% unless post.tags == empty %}
+        <li><i class="fa fa-tags"></i></li>
+        {% assign tags_list = post.tags %}
+        {% if tags_list.first[0] == null %}
+        {% for tag in tags_list %} 
+          <li>
+            <a href="{{ site.BASE_PATH }}/{{ site.tags_path }}#{{ tag }}-ref">
+            {{ tag }} <span>({{ site.tags[tag].size }})</span>
+            {% unless forloop.last %},{% endunless %}
+            </a>
+          </li>
+        {% endfor %}
+        {% else %}
+        {% for tag in tags_list %} 
+          <li>
+            <a href="{{ site.BASE_PATH }}/{{ site.tags_path }}#{{ tag[0] }}-ref">
+              {{ tag[0] }} <span>({{ tag[1].size }})</span>
+              {% unless forloop.last %},{% endunless %}
+            </a>
+          </li>
+            
+        {% endfor %}
+        {% endif %}
+        {% assign tags_list = nil %}
+      {% endunless %}
+    </ul>  
+
+    {% if post.fullview %}
+    {{ post.content }}
+    {% elsif post.shortinfo %}
+    {{ post.shortinfo }}
+    {% elsif post.description %}
+    {{ post.description }}
+    {% endif %}
+  </div>
+
+</article>
 {% endfor %}
 
-{% include paginator.html %}
+<hr/>
+
+<ul class="pager"> 
+
+  {% if paginator.previous_page %}
+  <li class="previous">
+    {% if paginator.previous_page == 1 %}
+    <a href="{{ site.BASE_PATH }}/">&larr; Newer</a>
+    {% else %}
+    <a href="{{ site.BASE_PATH }}/{{ site.paginate_path | replace: ':num', paginator.previous_page }}">&larr; Newer</a>
+    {% endif %}
+  </li>
+  {% else %}
+  <li class="previous disabled">
+    <a>&larr; Newer</a>
+  </li>
+  {% endif %}
+  
+  <li>
+    <span class="page_number">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
+  </li>
+
+  {% if paginator.next_page %}
+  <li class="next">
+    <a href="{{ site.BASE_PATH }}/{{ site.paginate_path | replace: ':num', paginator.next_page }}">Older &rarr;</a>
+  </li>
+  {% else %}
+  <li class="next disabled">
+    <a>Older &rarr;</a>        
+  </li>
+  {% endif %}
+
+</ul>

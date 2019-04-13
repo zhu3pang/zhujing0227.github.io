@@ -3,9 +3,8 @@ layout: post
 title: MongoDB在Java中动态创建索引
 tags: MongoDB
 category: 数据库
-#eye_catch: http://jekyllrb.com/img/logo-2x.png
----
-
+description: 
+description: 
 ---
 
 每次需要在MongoDB中创建索引都要找DBA,一堆邮件审批,嗯,所以就试试直接在代码里创建索引吧

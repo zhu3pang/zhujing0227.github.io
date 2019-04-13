@@ -1,123 +1,41 @@
-#
-# Basic settings.
-#
-# url: http://localhost:4000
-# baseurl: ""
-url: http://zhujing0227.github.io
-baseurl: /
-title: zhujing的博客
-description: 嘻嘻哈哈学技术
-avatar: /assets/img/panghu.jpg
-# favicon: /favicon.ico
-favicon: /assets/img/panghu.jpg
-# language: ja
-language: en
+# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
 
-#
-# Icons
-#
-icons:
-  rss: false
-  email:
+paginate: 10 # pagination based on number of posts
+paginate_path: "page:num"
+exclude: ["README.md"] # files to exclude
+highlighter: rouge
+markdown: kramdown
+disqus: 
+google_analytics: 
+title: ZhuJing's Blog
+profile: /assets/profile.jpg
+
+defaults:
+  -
+    scope:
+      path: "" # empty string for all files
+    values:
+      title: ZhuJing's Blog
+
+description: 搬砖铲屎 Javaer
+author:
+  name: ZhuJing
+  email: zhujing0227@gmail.com
   github: zhujing0227
-  bitbucket:
-  twitter: #ttskch
-  facebook:
-  google_plus:
-  tumblr:
-  behance:
-  dribbble:
-  flickr:
-  instagram:
-  linkedin: # full URL
+  twitter: 
   pinterest:
-  reddit:
-  soundcloud:
-  stack_exchange: # full URL
-  steam:
-  wordpress:
-  youtube:
+  linkedin: 
+  bio: A javaer and scalaer, focused on big-data
+  email_md5: 89aec36fb6973fd7eb0a5d59cb01b9be
 
-#
-# Prettify url.
-#
-permalink: pretty
+rss_path: feed.xml
+categories_path: categories.html
+tags_path: tags.html
 
-#
-# Scripts.
-#
-google_analytics: # e.g. UA-000000-01
-disqus:
+# set it as url of an image
+sidebar_background_image: https://www.dropbox.com/s/g9h23zrycedxtk5/sky.png?raw=1
 
-#
-# Localizations.
-#
-str_next: Next
-str_prev: Prev
-str_read_more: Read more...
-str_search: Search
-str_recent_posts: Recent posts
-str_show_all_posts: Show all posts
+BASE_PATH:
 
-#
-# Recent posts.
-#
-recent_posts_num: 10
-
-#
-# Pagination.
-#
-paginate: 10
-paginate_path: page/:num
-
-#
-# Social.
-#
-share_buttons:
-  twitter: true
-  facebook: false # needs ogp.fb.app_id
-  hatena: false
-ogp:
-  image_url: //ttskch.github.io/jekyll-ttskch-theme/assets/img/ogp.png
-  fb:
-    admin: # facebook admin id
-    app_id: # facebook application id
-
-#
-# Gems.
-#
 plugins:
   - jekyll-paginate
-  - jemoji
-
-#
-# Styles: see "_sass/base/_variables.scss"
-#
-
-#
-# !! Danger zone !!
-#
-
-include: ["_pages"]
-
-markdown: kramdown
-kramdown:
-  input: GFM
-  syntax_highlighter: rouge
-
-excerpt_separator: <!--more-->
-
-sass:
-  sass_dir: _sass
-  style: :compressed # or :expanded
-
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - LICENSE
-  - README.md
-  - vendor
-
-
-plugin_dir:
-  hexo-math

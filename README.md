@@ -1,59 +1,37 @@
-# jekyll-ttskch-theme
+dbyll
+=====
 
-A simple and customizable theme for Jekyll.
+Open source stylish, minimalistic theme for jekyll.  
+Demo: http://dbtek.github.io/dbyll/
 
-> This theme was renamed from _jekyll-**qck**-theme_ to _jekyll-**tch**-theme_ at 2016.06.02.  
-> And renamed again from _jekyll-**tch**-theme_ to _jekyll-**ttskch**-theme_ at 2016.09.23.
+## New
+- Dbyll for Ghost is now available. Get it [here](https://github.com/dbtek/dbyll-ghost) now.
+- :new: Check out [Paper](https://github.com/dbtek/paper), new Material Design Jekyll theme.
 
-## Screen shot
+### Features
+- Responsive layout.
+- Supports tags and categories.
+- Social profile and bio of author.
+- Bootstrap based.
+- Glyphicon and Font-Awesome Icons.
+- Pagination.
+- Syntax highlighting with pygments.
+- Disqus comments.
+- :new: Custom sidebar background image.
 
-![image](https://cloud.githubusercontent.com/assets/4360663/18776176/62611b38-81a2-11e6-875b-86a66aa8f15c.png)
 
-## Features
+### Download
+* [Download dbyll](https://github.com/dbtek/dbyll/archive/master.zip)
 
-* A lot of Markdown features (also GitHub Flavored Markdown)
-* `:emoji:` ready :+1:
-* Easy color-scheme customization
-* Tags list page
-* Monthly Archives page
-* Search feature without any Jekyll plugins
-* `<!--more-->` tag feature
-* Anchor links for each headings
-* Sticky side nav
-* Responsive
-* OGP ready
-* Share buttons ready
+### Install
+- You need to have [ruby](https://www.ruby-lang.org/en/documentation/installation/) installed in your system.
+- Install bundler which helps in specifying and installing dependencies of any Ruby project. ```gem install bundler```
+- Go to the root of the repo and run this - ```bundle install```
+- Then - ```bundle exec jekyll serve```
 
-## Getting started
+### Screenshots
+![dbyll-screenshot](assets/media/dbyll-ss.png)
 
-1. [Fork me](https://github.com/ttskch/jekyll-ttskch-theme/fork)
-2. Rename the repository from `jekyll-ttskch-theme` to `{username}.github.io` ([learn more](https://pages.github.com/))
-3. Modify `_config.yml`
-4. Modify `_sass/base/_variables.scss` if you need to change colors or font sizes
-5. Add new posts into `_posts/` :smiley:
+### License
+- [MIT](http://opensource.org/licenses/MIT)
 
-## Demo
-
-You can see live demo at below:
-
-* https://ttskch.github.io/jekyll-ttskch-theme/
-
-## Thanks for using :wink:
-
-* http://ttskch.github.io
-* http://sitaramshelke.github.io
-* http://jffourmond.github.io
-* http://vbflash8.github.io
-* http://luqitao.github.io
-* http://harusametime.github.io
-* http://gitzxon.github.io
-* http://hutsonlu.github.io
-* http://k0-1.github.io
-* http://anthonygore.github.io
-* http://getjsdojo.github.io
-* http://georgezhuo.github.io
-* http://neontapir.github.io
-* https://sasukeh.github.io
-* https://blog.guilhermegarnier.com
-
-Please PR if you want to add your blog.

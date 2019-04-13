@@ -3,7 +3,8 @@ layout: post
 title: 利用lomcok减少Java冗余代码
 tags: lombok
 category: lombok
-#eye_catch: http://jekyllrb.com/img/logo-2x.png
+description: 
+description: 
 ---
 
 lombok是在编译期间生成的字节码,不会影响程序的运行性能,**[lombok 官网](https://projectlombok.org/)**
