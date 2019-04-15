@@ -3,7 +3,7 @@ layout: post
 title: sessionStorage实现表单缓存回显
 tags: html5
 category: html5
-description: 
+comments: true
 description: html5使用sessionStorage实现表单缓存回显
 ---
 html5中的Web Storage包含了两种方式：sessionStorage和localStorage.
