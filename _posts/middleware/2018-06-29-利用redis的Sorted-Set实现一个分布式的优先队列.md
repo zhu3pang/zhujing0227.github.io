@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 利用Redis的Sorted-Set实现一个优先任务队列
-tags: 杂七杂八
-category: 杂七杂八
+tags: mixed
+category: mixed
 comments: true
 #eye_catch: http://jekyllrb.com/img/logo-2x.png
 ---

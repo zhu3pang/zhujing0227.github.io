@@ -40,3 +40,28 @@ BASE_PATH:
 
 plugins:
   - jekyll-paginate
+
+# include: ['_pages/datastructure','_pages/algorithm','_pages/java','_pages/middleware','_pages/mysql','_pages/scratch']
+
+# collections:
+#   datastructure:
+#     output: true
+#     permalink: /:datastructure
+#   algorithm:
+#     output: true
+#     permalink: /:algorithm
+#   java:
+#     output: true
+#     permalink: /:java
+#   middleware:
+#     output: true
+#     permalink: /:middleware
+#   mysql:
+#     output: true
+#     permalink: /:mysql
+#   scratch:
+#     output: true
+#     permalink: /:scratch
+#   mixed:
+#     output: true
+#     permalink: /:mixed
