@@ -10,7 +10,7 @@
 ---
 layout: post
 title: 消息队列之 kafka
-categories: MQ, kafka
+categories: [MQ, kafka]
 tags: [kafka]
 comments: true
 ---
