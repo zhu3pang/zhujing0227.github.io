@@ -1,0 +1,29 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 20:17
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 数据库事务和锁
+
+#+begin_export md
+---
+layout: post
+title: 数据库事务和锁
+categories: database
+tags: [mysql]
+comments: true
+---
+#+end_export
+
+* 事务隔离级别
+
+| 隔离级别                   | 脏读 | 不可重复读 | 幻读 |
+|----------------------------+------+------------+------|
+| Read Uncommitted(读未提交) | Yes  | Yes        | Yes  |
+| Read Committed(读已提交)   | No   | Yes        | Yes  |
+| Repeatable Read(可重复读)  | No   | No         | Yes  |
+| Serializable(串行)         | No   | No         | No   |
+
+
+http://klausguan.com/2017/08/01/database-review/

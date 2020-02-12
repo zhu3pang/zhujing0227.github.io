@@ -1,0 +1,90 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 16:15
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 排序之基数排序
+
+#+begin_export md
+---
+layout: post
+title: 排序之基数排序
+categories: Algorithm
+tags: [Algorithm, sort]
+comments: true
+---
+#+end_export
+
+* 基数排序
+
+将所有待比较数值（正整数）统一为同样的数位长度, 数位较短的数前面补零.然后, 从最低位开始, 依次进行一次排序.这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列.时间复杂度 O(kn)
+
+伪代码:
+#+begin_example
+radix-sort(Ak):O(kn)
+    for i = 1 to d
+        //use a stable sort to sort array on digiht i.
+        counting-sort(A, i)
+#+end_example
+
+* Java 实现
+
+#+BEGIN_SRC java
+  /**
+   ,* 基数排序,O(d*n)
+   ,*
+   ,* @param arr
+   ,* @return
+   ,*/
+  private static int[] radixSort(int[] arr) {
+      int exp = 1, d = maxbit(arr);
+      for (int i = 1; i <= d; i++) {
+          //use counting-sort to sort arr on digit i
+          countSort(arr, exp);
+          exp *= 10;
+      }
+      return arr;
+  }
+
+#+END_SRC
+
+此处利用了[[./计数排序][计数排序]]
+
+#+BEGIN_SRC java
+  /**
+   ,* 计数排序
+   ,*/
+  private static void countSort(int[] arr, int exp) {
+      int[] result = new int[arr.length];
+      int[] tmp = new int[10];
+      //计数排序是统计 arr 中相同元素的个数, 此处统计的是每个元素对应 exp 位数的数
+      for (int i = 0; i < arr.length; i++) {
+          tmp[((arr[i] / exp) % 10)]++;
+      }
+      for (int i = 1; i < 10; i++) {
+          tmp[i] += tmp[i - 1];
+      }
+      for (int i = 0; i < arr.length; i++) {
+          result[--tmp[((arr[i] / exp) % 10)]] = arr[i];
+      }
+      System.arraycopy(result, 0, arr, 0, result.length);
+  }
+
+  /**
+   ,* 求数据的最大位数
+   ,*/
+  private static int maxbit(int[] arr){
+      int max = arr[0];
+      for(int i = 1; i< arr.length; i++){
+          if(arr[i] > max) max = arr[i];
+      }
+      int d = 1;
+      while(max >= 10){
+          max /= 10;
+          d++;
+      }
+      return d;
+  }
+
+#+END_SRC

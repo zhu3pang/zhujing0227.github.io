@@ -1,0 +1,118 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 19:45
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 消息队列之 rabbitmq
+
+#+begin_export md
+---
+layout: post
+title: 消息队列之 rabbitmq
+categories: MQ
+tags: [rabbitmq]
+comments: true
+---
+#+end_export
+
+
+* 安装与启动
+  #+begin_example
+  --- ~ » brew install rabbitmq
+  --- ~ » brew services restart rabbitmq
+  #+end_example
+  启动后执行`rabbitmq-plugins enable rabbitmq_management`命令, 开启 Web 管理插件,访问`http://localhost:15672/`进入页面进行管理,用户名`guest`,密码`guest`
+
+* springboot 中使用实例
+  pom
+  #+BEGIN_SRC xml
+    <!--rabbitmq-->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-amqp</artifactId>
+        <version>1.5.7.RELEASE</version>
+    </dependency>
+  #+END_SRC
+  gradle
+  #+begin_quote
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '1.5.7.RELEASE'
+  #+end_quote
+
+** yml 配置
+   #+BEGIN_SRC yaml
+     spring:
+     # rabbitmq 配置
+       rabbitmq:
+         addresses: localhost:5672
+         username: guest
+         password: guest
+  #+END_SRC
+
+
+** 生产者示例
+   #+BEGIN_SRC java
+     @Component
+     public class RabbitProducer {
+
+         private static final Logger logger = LoggerFactory.getLogger(RabbitProducer.class);
+
+         @Autowired
+         private AmqpTemplate rabbitTemplate;
+
+         public void sendMessage(String queueName, Object value){
+             String message = JSON.toJSONString(value);
+             logger.info("RabbitProducer 发送消息--->" + message);
+     //        rabbitTemplate.convertAndSend("XXX_SYSTEM_TEST",
+     //            "{\"status\":\"013010\",\"loanNo\":\"00000201707127785\",\"statusChangeTime\":\"2017-09-08 15:30:16\"}" + LocalDateTime.now().toString());
+
+             rabbitTemplate.convertAndSend(queueName, message.getBytes());
+         }
+
+     }
+  #+END_SRC
+
+** 消费者示例
+   #+BEGIN_SRC java
+     @Component
+     public class RabbitConsumer {
+
+         private static final Logger logger = LoggerFactory.getLogger(RabbitConsumer.class);
+
+         @RabbitListener(queues = "XXX_SYSTEM_TEST")
+         @RabbitHandler
+         public void process(byte[] message) {
+             try {
+                 String value = new String(message);
+                 NpmlStateContent npmlStateContent = JSON.parseObject(value, NpmlStateContent.class);
+                 logger.info("RabbitConsumer 接受消息--->" + npmlStateContent);
+                 //TODO 业务处理方法
+                 logger.info("RabbitConsumer 消费结束");
+
+             } catch (Exception e) {
+                 logger.error("==kafkaConsumer 消费失败==, 消息--->" + message, e);
+             }
+         }
+
+     }
+
+     class NpmlStateContent {
+         private String loanNo;//系统的 loanNo
+         private String status;//状态
+         private String statusChangeTime;//状态变更时间
+
+         getter/setter...
+
+         @Override
+         public String toString() {
+             return "NpmlStateContent{" +
+                 "loanNo='" + loanNo + '\'' +
+                 ", status='" + status + '\'' +
+                 ", statusChangeTime='" + statusChangeTime + '\'' +
+                 '}';
+         }
+     }
+  #+END_SRC
+
+[[http://blog.didispace.com/spring-boot-rabbitmq/][rabbimq 学习参考]]
+[[https://www.rabbitmq.com/tutorials/tutorial-one-java.html][rabbimq 学习参考 官网 demo]]

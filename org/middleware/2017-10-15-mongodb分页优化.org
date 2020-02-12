@@ -1,0 +1,325 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 19:51
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: MongoDB 分页优化
+
+#+begin_export md
+---
+layout: post
+title: MongoDB 分页优化
+categories: database
+tags: [MongoDB]
+comments: true
+---
+#+end_export
+
+* MongoDB 分页现状
+  MongoDB 在数据超过百万级后分页速度明显降低,从 ms 级到 s 级,到千万级后已经到无法忍受的速度了,下面有具体的实际分析
+** 无索引情况
+  #+BEGIN_SRC json
+    [
+        {
+            "v" : 2.0, 
+            "key" : {
+                "_id" : 1.0
+            }, 
+            "name" : "_id_", 
+            "ns" : "admin.DTO"
+        }
+    ]
+#+END_SRC
+
+  数据量 500 万
+  #+begin_example
+  ====================================================================
+  
+  *********
+  skip 数量 : 3000010.0, 
+  db.DTO.explain("executionStats").find({}).sort({"createTime":-1}).skip(3000000).limit(10)
+  OperationFailed: Sort operation used more than the maximum 33554432 bytes of RAM
+
+  --------------------------------------------------------------------
+  --------------------------------------------------------------------
+
+  *********
+  skip 数量 : 3000010.0, 
+  db.DTO.explain("executionStats").find({'_id':{$lte:ObjectId("59c550c416fa5c3e9c0e9709")}}).sort({"createTime":-1}).limit(10)
+  "nReturned" : 10.0, 
+  "executionTimeMillis" : 15330.0, 
+  "totalKeysExamined" : 2000001.0, 
+  "totalDocsExamined" : 2000001.0, 
+
+  --------------------------------------------------------------------
+  --------------------------------------------------------------------
+
+  *********
+  skip 数量 : 3000010.0, 
+  db.DTO.explain("executionStats").find({'id':{$lte:NumberLong(2000001)}}).sort({"createTime":-1}).limit(10)
+  "nReturned" : 10.0, 
+  "executionTimeMillis" : 28718.0, 
+  "totalKeysExamined" : 0.0, 
+  "totalDocsExamined" : 5000001.0, 
+
+  ====================================================================
+  #+end_example
+
+** 复合索引情况
+   #+BEGIN_SRC json
+     [
+         {
+             "v" : 2.0, 
+             "key" : {
+                 "_id" : 1.0
+             }, 
+             "name" : "_id_", 
+             "ns" : "admin.DTO"
+         }, 
+         {
+             "v" : 2.0, 
+             "key" : {
+                 "id" : 1.0, 
+                 "createTime" : -1.0
+             }, 
+             "name" : "id_1_createTime_-1", 
+             "ns" : "admin.DTO"
+         }, 
+         {
+             "v" : 2.0, 
+             "key" : {
+                 "idcard" : 1.0, 
+                 "createTime" : -1.0
+             }, 
+             "name" : "idcard_1_createTime_-1", 
+             "ns" : "admin.DTO"
+         }, 
+         {
+             "v" : 2.0, 
+             "key" : {
+                 "name" : 1.0, 
+                 "createTime" : -1.0
+             }, 
+             "name" : "name_1_createTime_-1", 
+             "ns" : "admin.DTO"
+         }
+     ]
+#+end_src
+
+   数据量 500 万
+   #+begin_example
+   ====================================================================
+
+   *********
+   skip 数量 : 3000010.0, 
+   db.DTO.explain("executionStats").find({}).sort({"createTime":-1}).skip(3000000).limit(10)
+   "nReturned" : 1.0, 
+   "executionTimeMillis" : 29573.0, 
+   "totalKeysExamined" : 0.0, 
+   "totalDocsExamined" : 5000001.0,
+
+   --------------------------------------------------------------------
+   --------------------------------------------------------------------
+
+   *********
+   skip 数量 : 3000010.0, 
+   db.DTO.explain("executionStats").find({'_id':{$lte:ObjectId("59c550c416fa5c3e9c0e9709")}}).sort({"createTime":-1}).limit(10)
+   "nReturned" : 10.0, 
+   "executionTimeMillis" : 14568.0, 
+   "totalKeysExamined" : 2000001.0, 
+   "totalDocsExamined" : 2000001.0, 
+
+   --------------------------------------------------------------------
+   --------------------------------------------------------------------
+
+   *********
+   skip 数量 : 3000010.0, 
+   db.DTO.explain("executionStats").find({'id':{$lte:NumberLong(2000001)}}).sort({"createTime":-1}).limit(10)
+   "nReturned" : 10.0, 
+   "executionTimeMillis" : 14756.0, 
+   "totalKeysExamined" : 2000001.0, 
+   "totalDocsExamined" : 2000001.0, 
+
+   ====================================================================
+   #+end_example
+
+* MongoDB 分页优化
+  下面是针对[[http://blog.sina.com.cn/s/blog_56545fd30101442b.html][MongoDB 分页处理方案]]中第三条方案的实现
+  #+BEGIN_SRC java
+    /**
+     ,* 同步分页信息到 redis
+     ,* Created by zhuji on 2017/9/25.
+     ,*/
+
+    @Component
+    public class SynchroPaginationService {
+
+        @Autowired
+        private RedisComponent redisComponent;
+        @Autowired
+        private MongoDb<DTO> mongoDb;
+
+        public void synchroPagination(PageInfo pageInfo) {
+            redisComponent.initDataBaseIndex(6);
+
+            long count = mongoDb.count(DTO.class, null);  //总数
+            int pageSize = pageInfo.getPageSize();  //页大小
+            int totalPage = (int) Math.floor((double) count / pageSize);    //总页数
+            String direction = pageInfo.getDirection();     //排序方向  'DESC','ASC'
+
+            LocalDateTime endTime = LocalDateTime.now();    //查询 mongo 第一页的时间条件
+
+            //指定字段是否返回
+            BasicDBObject fieldsObject = new BasicDBObject();
+            fieldsObject.append("createTime", true);
+
+            //====同步第 0 到 count/pageSize 页
+            for (int i = 0; i <= totalPage; i++) {
+                //查询条件
+                BasicDBObject queryCondition = new BasicDBObject();
+                Query query;
+                switch (direction.toUpperCase()) {
+                    case "DESC":
+                        queryCondition.put("createTime", new BasicDBObject("$lt", endTime));
+                        query = new BasicQuery(queryCondition, fieldsObject)
+                            .with(new Sort(Sort.Direction.DESC, "createTime"))
+                            .limit(pageSize);
+                        break;
+                    case "ASC":
+                        queryCondition.put("createTime", new BasicDBObject("$gt", endTime));
+                        query = new BasicQuery(queryCondition, fieldsObject)
+                            .with(new Sort(Sort.Direction.ASC, "createTime"))
+                            .limit(pageSize);
+                        break;
+                    default:
+                        query = new BasicQuery(queryCondition, fieldsObject)
+                            .with(new Sort(Sort.Direction.DESC, "createTime"))
+                            .limit(pageSize);//默认逆序
+                }
+
+                List<DTO> nextPage = mongoDb.find(query, DTO.class);
+                redisComponent.setHashKey(Constant.CRM_PAGINATION_INFO_KEY, i, nextPage.get(0).getCreateTime());
+                endTime = nextPage.get(pageSize - 1).getCreateTime();   //设置下一页查询条件
+            }
+        }
+    }
+ #+END_SRC
+  经测试同步 100 万数据(每页 10 条)分页信息到 redis 耗时 3min,同步之后分页查询时间到 10ms 内,但是太耗资源未被采用.暂时参考[[http://blog.sina.com.cn/s/blog_56545fd30101442b.html][MongoDB 分页处理方案]]中 Google 的处理方案吧.
+
+* redis 辅助类
+  #+BEGIN_SRC java
+    public class RedisComponent {
+
+        @Autowired
+        //操作字符串的 template, StringRedisTemplate 是 RedisTemplate 的一个子集
+        private StringRedisTemplate stringRedisTemplate;
+
+        /**
+         ,* 设置 redis 中 hash 值
+         ,* @param hashKey   redis 中的键    'pagination_info'
+         ,* @param key       键 hashKey 对应的键值对的 key  '1','2'
+         ,* @param value     键 hashKey 对应的键值对的 value    '[2017-09-25 12:00:02, 2017-09-25 12:00:03]'
+         ,*/
+        public void setHashKey(String hashKey, Object key, Object value){
+            stringRedisTemplate.boundHashOps(hashKey).put(JSON.toJSONString(key), JSON.toJSONString(value));
+        }
+
+        /**
+         ,* 从 redis 中获取 hashKey 对应 key 的值
+         ,* @param hashKey       redis 中的键    'pagination_info'
+         ,* @param key           键 hashKey 对应的键值对的 key  '1','2'
+         ,* @return              key 对应的值 value
+         ,*/
+        public Object getHashKey(String hashKey, Object key){
+            return stringRedisTemplate.boundHashOps(hashKey).get(JSON.toJSONString(key));
+        }
+
+        /**
+         ,* 从 Redis 中获取唯一 ID
+         ,* @param index redis 数据库号
+         ,* @param key   redis 中键 next_id
+         ,* @param step  自增步长,默认 1
+         ,* @return      返回 key 的唯一 ID
+         ,*/
+        public Long getUniqueId(int index, String key, Long step){
+            if (step == null) step = 1L;
+            initDataBaseIndex(index);
+            return stringRedisTemplate.opsForValue().increment(key, step);
+        }
+
+        /**
+         ,* 设置 Redis 数据库号
+         ,* @param index Redis 数据库号
+         ,*/
+        public void initDataBaseIndex(int index){
+            ((JedisConnectionFactory) stringRedisTemplate.getConnectionFactory()).setDatabase(index);
+        }
+
+    }
+#+END_SRC
+
+** redis ID 生成器的测试
+   #+BEGIN_SRC java
+     /**
+      ,* Created by zhuji on 2017/9/18.
+      ,*/
+
+     @RunWith(SpringJUnit4ClassRunner.class)
+     @SpringBootTest
+     public class RedisComponentTest {
+
+         @Autowired
+         private RedisComponent redisComponent;
+
+         @Before
+         public void init() {
+     //        redisComponent.initDataBaseIndex(5);
+     //        ((JedisConnectionFactory)redisComponent.getStringRedisTemplate().getConnectionFactory()).setDatabase(5);
+         }
+
+         @Test
+         public void getUniqueId() throws Exception {
+             int threadCount = 50;
+             final int genCount = 100;
+             StopWatch watch = new StopWatch();
+             watch.start();
+
+             // unique id check
+             final Map<Long, Object> map = new ConcurrentHashMap<>();
+             final Object o = new Object();
+
+             CompletableFuture.allOf(IntStream.range(0, threadCount)
+                 .mapToObj(i -> CompletableFuture.runAsync(() -> test(genCount, map, o))).toArray(CompletableFuture[]::new))
+                 .get();
+
+             watch.stop();
+
+             System.out.println("threadCount:" + threadCount + ", genCount:" + genCount);
+             System.out.println("map size:" + map.size());
+
+             System.out.println("time:" + watch);
+             System.out.println("speed:" + genCount * threadCount / (watch.getTotalTimeMillis() / 1000.0));
+
+             if (map.size() != threadCount * genCount) {
+                 System.err.println("It seems generated the same id!!!");
+                 System.exit(-1);
+             }
+
+         }
+
+         private void test(int genCount, Map<Long, Object> map, Object o) {
+
+             IntStream.range(0, genCount)
+                 .forEach(j -> {
+                     Long nextId = redisComponent.getUniqueId(5, "CRM:next_id", 1L);
+                     System.out.println(nextId);
+                     map.put(nextId, o);
+                 });
+         }
+
+     }
+   #+END_SRC
+
+[[http://www.c-s-a.org.cn/ch/reader/create_pdf.aspx?file_no=20150647][MongoDB 中数据分页优化技术]]
+[[http://blog.sina.com.cn/s/blog_56545fd30101442b.html][MongoDB 分页处理方案]]

@@ -1,0 +1,364 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 16:46
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 二叉树
+
+#+begin_export md
+---
+layout: post
+title: 二叉树
+categories: DataStructure
+tags: [tree, binary-tree, data-structure]
+comments: true
+---
+#+end_export
+
+* 二叉树的类型
+  二叉树是一个有根树, 并且每个节点最多有 2 个子节点.非空的二叉树, 若树叶总数为 n0, 分支度为 2 的总数为 n2, 则 n0 = n2 + 1.
+  一棵深度为 k, 且有$$2 ^ {k}-1$$ 个节点的二叉树, 称为满二叉树（Full Binary Tree）.这种树的特点是每一层上的节点数都是最大节点数.而在一棵二叉树中, 除最后一层外, 若其余层都是满的, 并且最后一层或者是满的, 或者是在右边缺少连续若干节点, 则此二叉树为完全二叉树（Complete Binary Tree）.具有 n 个节点的完全二叉树的深度为$$log{n}+1$$.深度为 k 的完全二叉树, 至少有 $$2 ^ k$$个节点, 至多有 $$2 ^ {k+1} - 1$$个节点.
+|          | 完全二叉树        | 满二叉树 |
+|----------+-------------------+----------|
+| 总结点 k | 2_(h-1)<=k<=2_h-1 | k=2_h-1  |
+| 树高 h   | h=log(k)+1        | log(k+1)  |
+
+如果给二叉树加一个额外的条件, 就可以得到一种被称作二叉搜索树(binary search tree)的特殊二叉树.二叉搜索树要求：每个节点都不比它左子树的任意元素小, 而且不比它的右子树的任意元素大.
+
+* 二叉搜索树链表实现
+  #+BEGIN_SRC java
+    import lombok.AllArgsConstructor;
+    import lombok.ToString;
+
+    import java.util.Random;
+    import java.util.Stack;
+    import java.util.stream.IntStream;
+
+    public class BinarySearchTree<T extends Comparable<? super T>> {
+
+        private TreeNode<T> root;
+
+        public void insert(T t) {root = insert(t, root);}
+
+        public boolean contains(T t) {return findNode(t, root) != null;}
+
+        public void remove(T t) {remove(t, root);}
+
+        /**
+         ,*  中序遍历
+         ,*/
+        public void inOrder() {inOrder(root);}
+
+        public TreeNode<T> find(T t) {return findNode(t, root);}
+
+        /**
+         ,*  插入节点
+         ,*/
+        private TreeNode<T> insert(T t, TreeNode<T> treeNode) {
+            if (treeNode == null) return new TreeNode<>(t);
+
+            int compareResult = t.compareTo(treeNode.element);
+
+            if (compareResult > 0) {
+                treeNode.right = insert(t, treeNode.right);
+            } else if (compareResult < 0) {
+                treeNode.left = insert(t, treeNode.left);
+            } else {
+                //repeat pass
+            }
+            return treeNode;
+        }
+
+        /**
+         ,*  查找节点
+         ,*/
+        private TreeNode<T> findNode(T t, TreeNode<T> treeNode) {
+            if (treeNode == null) return null;
+
+            int compareResult = t.compareTo(treeNode.element);
+            if (compareResult > 0) {
+                treeNode = findNode(t, treeNode.right);
+            } else if (compareResult < 0) {
+                treeNode = findNode(t, treeNode.left);
+            }
+            return treeNode;
+        }
+
+        /**
+         ,*  删除节点
+         ,*/
+        private TreeNode<T> remove(T t, TreeNode<T> treeNode) {
+            if (treeNode == null) return null;
+
+            if (t.compareTo(treeNode.element) > 0) {
+                treeNode.right = remove(t, treeNode.right);
+            } else if (t.compareTo(treeNode.element) < 0) {
+                treeNode.left = remove(t, treeNode.left);
+            } else {
+                //have found the node to delete
+                if (treeNode.left != null && treeNode.right != null) {
+                    //左右子节点都不为空
+                    //1.copy the largest value of the left subtree
+                    // or the minimal value of the right subtree into node to delete
+                    treeNode.element = findMaxNode(treeNode.left).element;
+                    //2.remove node whose value we copied
+                    treeNode.left = remove(treeNode.element , treeNode.left);
+
+    //                treeNode.element = findMinNode(treeNode.right).element;
+    //                treeNode.right = remove(t, treeNode.right);
+                } else {
+                    //左右子节点至少有一个空节点,直接将左子节点/右子节点赋为其父节点
+                    treeNode = (treeNode.left != null) ? treeNode.left : treeNode.right;
+                }
+            }
+            return treeNode;
+        }
+
+        /**
+         ,* 先序遍历
+         ,* root -> left -> right
+         ,* @param treeNode
+         ,*/
+        private void preOrder(TreeNode<T> treeNode) {
+            if (treeNode != null) {
+                System.out.println(treeNode.element);
+                preOrder(treeNode.left);
+                preOrder(treeNode.right);
+            }
+        }
+
+        /**
+         ,* 非递归版本先序遍历
+         ,* @param treeNode
+         ,*/
+        private void preOrderNoRecursive(TreeNode<T> treeNode) {
+            Stack<TreeNode<T>> treeNodeStack = new Stack<>();
+
+            TreeNode<T> cursor = treeNode;
+
+            while (cursor != null || !treeNodeStack.isEmpty()) {
+                while (cursor != null) {
+                    System.out.println(cursor.element);
+                    treeNodeStack.push(cursor);
+                    cursor = cursor.left;
+                }
+                if (!treeNodeStack.isEmpty()) {
+                    cursor = treeNodeStack.pop();
+                    cursor = cursor.right;
+                }
+            }
+        }
+
+        /**
+         ,* 中序遍历
+         ,* left -> root -> right
+         ,*
+         ,* @param treeNode
+         ,*/
+        private void inOrder(TreeNode<T> treeNode) {
+            if (treeNode != null) {
+                inOrder(treeNode.left);
+                System.out.println(treeNode.element);
+                inOrder(treeNode.right);
+            }
+        }
+
+        /**
+         ,*  非递归版本中序遍历
+         ,* @param treeNode
+         ,*/
+        private void inOrderNonRecursive(TreeNode<T> treeNode){
+            Stack<TreeNode<T>> treeNodeStack = new Stack<>();
+
+            TreeNode<T> cursor = treeNode;
+            while (cursor != null || !treeNodeStack.isEmpty()){
+                while (cursor != null){
+                    treeNodeStack.push(cursor);
+                    cursor = cursor.left;
+                }
+                if (!treeNodeStack.isEmpty()){
+                    cursor = treeNodeStack.pop();
+                    System.out.println(cursor.element);
+                    cursor = cursor.right;
+                }
+            }
+        }
+
+        /**
+         ,* 后序遍历
+         ,* left -> right -> root
+         ,*
+         ,* @param treeNode
+         ,*/
+        private void postOrder(TreeNode<T> treeNode) {
+            if (treeNode != null) {
+                postOrder(treeNode.left);
+                postOrder(treeNode.right);
+                System.out.println(treeNode.element);
+            }
+        }
+
+        /**
+         ,*  查找最大节点
+         ,*/
+        private TreeNode<T> findMaxNode(TreeNode<T> treeNode) {
+            if (treeNode == null) return null;
+
+            while (treeNode.right != null) {
+                treeNode = treeNode.right;
+            }
+            return treeNode;
+        }
+
+        /**
+         ,*  查找最小节点
+         ,*/
+        private TreeNode<T> findMinNode(TreeNode<T> treeNode) {
+            if (treeNode == null) return null;
+
+            while (treeNode.left != null) {
+                treeNode = treeNode.left;
+            }
+            return treeNode;
+        }
+
+        @ToString
+        @AllArgsConstructor(staticName = "of")
+        private static class TreeNode<T> {
+            T element;
+            TreeNode<T> left;
+            TreeNode<T> right;
+
+            TreeNode(T element) {
+                this(element, null, null);
+            }
+
+        }
+
+        public static void main(String[] args) {
+            BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+
+            Random random = new Random();
+            IntStream.range(0, 10)
+                .forEach(i -> tree.insert(random.nextInt(10)));
+
+            /*
+                        2
+                    1       4
+                0       3       8
+            ,*/
+
+            tree.inOrder();             //0,1,2,3,4,8
+            tree.preOrder(tree.root);   //2,1,0,4,3,8
+
+            tree.remove(2);
+            /*
+                        1
+                    0       4
+                        3       8
+            ,*/
+            tree.inOrder();             //0,1,3,4,8
+            tree.preOrder(tree.root);   //1,0,4,3,8
+        }
+    }
+
+  #+END_SRC
+
+** 查找任意节点的前驱和后继节点
+   前驱结点:
+  - 如果该结点的左子树不为空, 那么它的前驱就是它左子结点的最右结点;
+  - 如果该结点左子树为空, 而且是它父结点的右孩子, 那么它的前驱就是它的父结点;
+  - 如果该结点左子树为空, 而且是它父结点的左孩子, 就要往上开始找, 直到某个结点是父亲的右孩子为止;
+
+  后继节点:
+  - 如果该结点的右子树不为空, 那么它的后继就是它右子结点的最左结点;
+  - 如果该结点右子树为空, 而且是它父结点的左孩子, 那么它的前驱就是它的父结点;
+  - 如果该结点右子树为空, 而且是它父结点的右孩子, 就要往上开始找, 直到某个结点是父亲的左孩子为止;
+
+    #+BEGIN_SRC java
+      private Node predecessor(Node node) {
+          if (node == null) return null;
+          if (node.left != null) return maxmum(node.left);
+
+          Node p = node.parent;
+          while (p != null && node == p.left) {
+              node = p;
+              p = p.parent;
+          }
+          return p;
+      }
+
+      //后继
+      private Node successor(Node node) {
+          if (node == null) return null;
+          if (node.right != null) return minimun(node.right);
+
+          Node p = node.parent;
+          while (p != null && node == p.right) {
+              node = p;
+              p = p.parent;
+          }
+          return p;
+      }
+    #+END_SRC
+
+* 栈实现
+  节点不持有父节点的指针时借助栈 LIFO 的特点实现.
+  #+BEGIN_SRC java
+    /**
+     ,* 不需要持有父节点的空间
+     ,* 中序遍历二叉树, 用栈来进行非递归遍历;用 cur_pop 指向当前出栈的结点, prev_pop 指向上一出栈的结点;当 cur_pop 为输入结点时, pre_pop 即为所求的前驱结点。时间复杂度为 O(N)。
+     ,* @param in 输入节点
+     ,* @return  前驱节点
+     ,*/
+    private Node inorderPredecessor(Node in) {
+        Stack<Node> stack = new Stack<>();
+        Node cursor = root, curPop = null, prePop = null;
+
+        while (cursor != null || !stack.empty()) {
+            while (cursor != null) {
+                stack.push(cursor);
+                cursor = cursor.left;
+            }
+
+            if (!stack.empty()) {
+                prePop = curPop;
+                curPop = stack.pop();
+                if (curPop == in) {
+                    break;
+                }
+                cursor = curPop.right;
+            }
+        }
+        return curPop == in ? prePop : null;
+    }
+
+    /**
+     ,* 中序遍历二叉树, 用栈来进行非递归遍历;用 cur_pop 指向当前出栈的结点, prev_pop 指向上一出栈的结点;当 prev_pop 为输入结点时, cur_pop 即为所求的后继结点。时间复杂度为 O(N)。
+     ,* @param in 输入节点
+     ,* @return  后继节点
+     ,*/
+    private Node inorderSuccessor(Node in) {
+        Stack<Node> stack = new Stack<>();
+        Node cursor = root, curPop = null, prePop = null;
+
+        while (cursor != null || !stack.isEmpty()) {
+            while (cursor != null) {
+                stack.push(cursor);
+                cursor = cursor.left;
+            }
+
+            if (!stack.isEmpty()) {
+                prePop = curPop;
+                curPop = stack.pop();
+                if (prePop == in) {
+                    break;
+                }
+                cursor = curPop.right;
+            }
+        }
+        return prePop == in ? curPop : null;
+    }
+
+  #+END_SRC

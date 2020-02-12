@@ -1,0 +1,109 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 16:26
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 排序之计数排序
+
+#+begin_export md
+---
+layout: post
+title: 排序之计数排序
+categories: Algorithm
+tags: [Algorithm, sort]
+comments: true
+---
+#+end_export
+
+* 计数排序
+  当输入的元素是 n 个 0 到 k 之间的整数时, 它的运行时间是 O(n+k).计数排序不是比较排序, 排序的速度快于任何比较排序算法.
+  由于用来计数的数组 A 的长度取决于待排序数组中数据的范围（等于待排序数组的最大值与最小值的差加上 1）, 这使得计数排序对于数据范围很大的数组, 需要大量时间和内存.例如：计数排序是用来排序 0 到 100 之间的数字的最好的算法, 但是它不适合按字母顺序排序人名.但是, 计数排序可以用在基数排序算法中, 能够更有效的排序数据范围很大的数组.
+
+  2. 找出待排序的数组中最大和最小的元素
+  3. 统计数组中每个值为 i 的元素出现的次数, 存入数组 A 的第 i 项
+  4. 对所有的计数累加（从 A 中的第一个元素开始, 每一项和前一项相加）
+  5. 反向填充目标数组：将每个元素 i 放在新数组的第 C[i]项, 每放一个元素就将 C[i]减去 1
+
+#+begin_example
+
+counting-sort(A, B, k):O(n) //k=max(A)
+    let C[0..k] be a new array
+    for i = 0 to A.length
+        C[A[i]] += 1
+    //C[i] now contains the number of elements equals to i.
+    for i = 1 to k
+        C[i] += C[i - 1]
+    //C[i] now contains the number of elements less tahn or equals to i.
+    for j = A.length downto 1
+        B[C[A[j]]] = A[j]
+        C[A[j]] -= 1
+
+#+end_example
+
+* Java 实现
+  #+BEGIN_SRC java
+
+    /**
+     ,* 计数排序,O(n+k) 当 k=O(n)时, 时间复杂度 O(n)
+     ,*
+     ,* @param arr
+     ,* @return
+     ,*/
+    private static int[] countingSort(int[] arr){
+        int[] minMax = findMinAndMax(arr);
+        int min = minMax[0], max = minMax[1];
+        int[] result = new int[arr.length];
+        int[] tmp = new int[max - min + 1];
+        //统计 arr 中相同元素的个数, tmp[i]即为 i 出现的次数
+        for (int i = 0; i < arr.length; i++) {
+            tmp[arr[i] - min]++;
+        }
+        //tmp[i]=小于等于 i 的元素个数
+        for (int i = 1; i <= k; i++) {
+            tmp[i] += tmp[i-1];
+        }
+        for (int i = 0; i < arr.length ; i++) {
+            result[--tmp[arr[i]] - min] = arr[i];
+        }
+        return result;
+    }
+
+    /**
+     ,* 同时找到最大和最小值, O(3n/2)
+     ,*/
+    private static int[] findMinAndMax(int[] arr){
+        if(arr.length == 1){
+            return new int[]{arr[0], arr[0]};
+        }
+        int min, max;
+        if(arr.length % 2 == 0){
+            max = arr[0] > arr[1] ? arr[0] : arr[1];
+            min = arr[0] < arr[1] ? arr[0] : arr[1];
+            for(int i = 2; i< arr.length - 1;){
+                if(arr[i] > arr[i+1]){
+                    max = arr[i] > max ? arr[i] : max;
+                    min = arr[i+1] < min ? arr[i+1] : min;
+                }else{
+                    max = arr[i+1] > max ? arr[i+1] : max;
+                    min = arr[i] < min ? arr[i] : min;
+                }
+                i += 2;
+            }
+        }else{
+            min = max = arr[0];
+            for(int i = 1; i < arr.length - 1;){
+                if(arr[i] > arr[i+1]){
+                    max = arr[i] > max ? arr[i] : max;
+                    min = arr[i+1] < min ? arr[i+1] : min;
+                }else{
+                    max = arr[i+1] > max ? arr[i+1] : max;
+                    min = arr[i] < min ? arr[i] : min;
+                }
+                i += 2;
+            }
+        }
+        return new int[]{min, max};
+    }
+
+  #+END_SRC

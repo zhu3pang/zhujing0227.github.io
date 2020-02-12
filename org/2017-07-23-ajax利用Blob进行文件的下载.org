@@ -1,0 +1,79 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 09:20
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: ajax 利用 Blob 进行文件的下载
+
+#+begin_export md
+---
+layout: post
+title: ajax 利用 Blob 进行文件的下载
+categories: mixed
+tags: [mixed]
+comments: true
+description: Blob 前端下载文件
+---
+#+end_export
+
+* 文本文件
+** 前端代码
+ #+BEGIN_SRC javascript
+   function download() {
+       $.ajax({
+           type: 'POST',
+           url: '/file',
+           data: your-param,
+           success: function (data) {
+               var blob = new Blob([data], {type: "application/octet-stream"});
+               // var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})
+               var objectUrl = URL.createObjectURL(blob);
+               var a = document.createElement('a');
+               document.body.appendChild(a);
+               a.setAttribute('style', 'display:none');
+               a.setAttribute('href', objectUrl);
+               a.setAttribute('download', 'test.txt');
+               a.click();
+
+               URL.revokeObjectURL(objectUrl)
+           }
+       });
+   }
+ #+END_SRC
+
+** 后台代码
+ #+BEGIN_SRC java
+   @PostMapping(value = "/file")
+   public void file(HttpServletResponse response) throws Exception{
+       response.setContentType("application/octet-stream");
+       response.setHeader("Content-Disposition", "attachment;filename=file.txt");
+       ServletOutputStream outputStream = response.getOutputStream();
+       //write your data, such as excel,pdf ..
+       outputStream.write("test abc".getBytes());
+       outputStream.flush();
+       outputStream.close();
+   }
+ #+END_SRC
+
+* 流文件
+ 上述方案经测试只能用于文本文件, 如 json/txt 等, 像 Excel/Word 等格式文件用以下方案:
+#+BEGIN_SRC javascript
+  var PARAMS = {
+      'name':'zhujing'
+  };
+  var temp = document.createElement("form");
+  temp.action = "/file";  //your url
+  temp.method = "post";
+  temp.style.display = "none";
+  for (var x in PARAMS) {
+      console.log(PARAMS[x]);
+      var opt = document.createElement("textarea");
+      opt.name = x;
+      opt.value = PARAMS[x];
+      temp.appendChild(opt);
+  }
+  document.body.appendChild(temp);
+  temp.submit();
+ #+END_SRC
+ 后台代码一样

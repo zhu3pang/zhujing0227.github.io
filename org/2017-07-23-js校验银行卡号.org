@@ -1,0 +1,51 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 09:56
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: js 校验银行卡号
+
+#+begin_export md
+---
+layout: post
+title: js 校验银行卡号
+categories: mixed
+tags: [mixed]
+comments: true
+description: js 校验银行卡的合法性
+---
+#+end_export
+
+* js 校验银行卡号
+
+** 附邮箱验证正则
+   #+BEGIN_SRC javascript
+     var reg_email=/^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$/
+   #+END_SRC
+
+#+BEGIN_SRC javascript
+  /*校验银行卡号合法性*/
+  //规则：
+  //1）从卡号最后一位数字开始, 逆向将奇数位(1、3、5 等等)相加.
+  //2）从卡号最后一位数字开始, 逆向将偶数位数字, 先乘以 2（如果乘积为两位数, 则将其减去 9）, 再求和.
+  //3）将奇数位总和加上偶数位总和, 结果应该可以被 10 整除.
+
+  function identityAccount(account){
+      var array = account.split('').reverse();
+      var oddSum = 0;     //奇数位之和
+      var evenSum = 0;    //偶数位之和
+      for(var i = 0; i < array.length; i++){
+          if(i%2 == 1){
+              if(Number(array[i])*2>=10){
+                  evenSum += Number(array[i])*2 - 9;
+              }else{
+                  evenSum += Number(array[i])*2;
+              }
+          }else{
+              oddSum += Number(array[i]);
+          }
+      }
+      return (oddSum+evenSum)%10 == 0;
+  }
+#+END_SRC

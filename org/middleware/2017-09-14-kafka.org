@@ -1,0 +1,141 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 19:35
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 消息队列之 kafka
+
+#+begin_export md
+---
+layout: post
+title: 消息队列之 kafka
+categories: MQ, kafka
+tags: [kafka]
+comments: true
+---
+#+end_export
+
+* Kafka 拓扑结构
+  一个典型的 Kafka 集群中包含若干 Producer（可以是 web 前端产生的 Page View, 或者是服务器日志, 系统 CPU、Memory 等）, 若干 broker（Kafka 支持水平扩展, 一般 broker 数量越多, 集群吞吐率越高）, 若干 Consumer Group, 以及一个 Zookeeper 集群.Kafka 通过 Zookeeper 管理集群配置, 选举 leader, 以及在 Consumer Group 发生变化时进行 rebalance.Producer 使用 push 模式将消息发布到 broker, Consumer 使用 pull 模式从 broker 订阅并消费消息.
+
+* 启动 zookeeper 和 server 端(单节点)
+    终端启动 zookeeper,port 默认 2181
+    `--- ~ » cd kafka`
+    `--- ~/kafka » bin/zookeeper-server-start.sh config/zookeeper.properties`
+    终端启动 kafka server 端,port 默认 9092
+    `--- ~ » cd kafka`
+    `--- ~/kafka » bin/kafka-server-start.sh config/server.properties`
+---
+* 启动多节点
+
+`--- ~ » cd kafka`
+
+`--- ~/kafka » cp config/server.properties config/server-1.properties`
+
+`--- ~/kafka » cp config/server.properties config/server-2.properties`
+
+修改 server-1.properties
+
+```
+broker.id=1	//唯一 id
+listeners=PLAINTEXT://:9093	
+log.dirs=/tmp/kafka-logs-1		//日志目录
+```
+
+修改 server-2.properties
+
+```
+broker.id=2	//唯一 id The id of the broker
+listeners=PLAINTEXT://:9094	//The address the socket server listens on
+log.dirs=/tmp/kafka-logs-2		//日志目录 A comma seperated list of directories under which to store log files
+num.partitions=2	//The default number of log partitions per topic. More partitions allow greater parallelism for consumption, but this will also result in more files across the brokers.
+```
+
+`--- ~/kafka » bin/kafka-server-start.sh config/server-1.properties`
+
+`--- ~/kafka » bin/kafka-server-start.sh config/server-2.properties`
+
+
+---
+
+* springboot 中使用示例
+** kafka 依赖
+   pom
+   #+BEGIN_SRC xml
+     <dependency>
+         <groupId>org.springframework.kafka</groupId>
+         <artifactId>spring-kafka</artifactId>
+         <version>1.2.2.RELEASE</version>
+     </dependency>
+   #+END_SRC
+   gradle
+   #+begin_quote
+   compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '1.2.2.RELEASE'
+   #+end_quote
+
+** yml 配置
+   #+BEGIN_SRC yaml
+     spring:
+       kafka:
+         template:
+           default-topic: test #默认主题
+     #   consumer 配置
+         consumer:
+           bootstrap-servers: localhost:9092
+           group-id: testSystem  #分组 id
+           enable-auto-commit: false
+           auto-offset-reset: earliest
+     #   producer 配置
+         producer:
+           bootstrap-servers: localhost:9092
+   #+END_SRC
+
+** 生产者示例
+   #+BEGIN_SRC java
+     @Component
+     public class KafkaProducer{
+         private static final Logger logger = LoggerFactory.getLogger(KafkaProducer.class);
+
+         @Autowired
+         private KafkaTemplate<String, String> kafkaTemplate;
+
+         public void produceMessage(String topic, String key, Object value) {
+             String defaultTopic = kafkaTemplate.getDefaultTopic();
+             logger.info("=====kafka 默认主题=======" + defaultTopic);
+     //        kafkaTemplate.sendDefault("00000201707127785", "{\"status\":\"013010\",\"loanNo\":\"00000201707127785\",\"statusChangeTime\":\"2017-09-08 15:30:16\"}");
+             kafkaTemplate.send(topic, key, JSON.toJSONString(value));
+         }
+     }
+   #+END_SRC
+
+** 消费者示例
+   #+BEGIN_SRC java
+     @Component
+     public class KafkaConsumer {
+
+         private static final Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
+
+         @KafkaListener(topics = "${spring.kafka.template.default-topic}")	//订阅主题(yml 中指定的 default-topic)
+         @KafkaHandler   //指明消息接收处理方法
+         public void processMessage(ConsumerRecord<String, String> record) {
+             try {
+                 logger.info("=============kafkaConsumer 开始消费=============");
+                 String topic = record.topic();
+                 String key = record.key();
+                 String value = record.value();
+                 long offset = record.offset();
+                 int partition = record.partition();
+                 logger.info("-------------topic:" + topic);
+                 logger.info("-------------value:" + value);
+                 logger.info("-------------key:" + key);
+                 logger.info("-------------offset:" + offset);	//偏移量,客户端自己控制的
+                 logger.info("-------------partition:" + partition);	//分区,可在 server.properties 中或在创建主题时设置数量,默认 1
+                 //TODO 业务处理方法
+                 logger.info("~~~~~~~~~~~~~kafkaConsumer 消费结束~~~~~~~~~~~~~");
+             } catch (Exception e) {
+                 logger.error("==kafkaConsumer 消费失败==, 消息--->" + record.value(), e);
+             }
+         }
+     }
+   #+END_SRC

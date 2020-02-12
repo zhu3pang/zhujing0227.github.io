@@ -1,0 +1,129 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 16:12
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 多线程归并排序
+
+#+begin_export md
+---
+layout: post
+title: 多线程归并排序
+categories: Algorithm
+tags: [Algorithm, sort]
+comments: true
+---
+#+end_export
+
+* ForkJoin
+  1. 将序列每相邻两个数字进行归并操作, 形成 ceil(n/2)个序列, 排序后每个序列包含两/一个元素
+  2. 若此时序列数不是 1 个则将上述序列再次归并, 形成 ceil(n/4)个序列, 每个序列包含四/三个元素
+  3. 重复步骤 2, 直到所有元素排序完毕, 即序列数为 1
+
+时间复杂度 O(nlg n), 空间复杂度 O(n)
+
+**  Java 实现
+   #+BEGIN_SRC java
+     /**
+      ,* description: SortTask
+      ,*
+      ,* @author: zhuji
+      ,* @date: Create at 2018/1/26 16:10
+      ,*/
+
+     @Slf4j
+     public class SortTask extends RecursiveAction {
+         private final Long[] array;
+         private final int lo, hi;
+
+         SortTask(Long[] array, int lo, int hi) {
+             this.array = array;
+             this.lo = lo;
+             this.hi = hi;
+         }
+
+         SortTask(Long[] array) {
+             this(array, 0, array.length);
+         }
+
+         @Override
+         protected void compute() {
+             log.info(Thread.currentThread().getName() + ":  lo " + lo + ", hi " + hi);
+             if (hi - lo < THRESHOLD) {
+                 sortSequentially(lo, hi);
+             } else {
+                 int mid = lo + ((hi - lo) >>> 1);
+                 invokeAll(new SortTask(array, lo, mid),
+                         new SortTask(array, mid, hi));
+                 merge(lo, mid, hi);
+             }
+         }
+
+         // implementation details follow:
+         private static final int THRESHOLD = 1000;
+
+         private void sortSequentially(int lo, int hi) {
+             Arrays.sort(array, lo, hi);
+         }
+
+         private void merge(int lo, int mid, int hi) {
+             Long[] buf = Arrays.copyOfRange(array, lo, mid);
+             for (int i = 0, j = lo, k = mid; i < buf.length; j++) {
+                 array[j] = (k == hi || buf[i] < array[k]) ?
+                         buf[i++] : array[k++];
+             }
+         }
+
+         public static void main(String[] args) throws Exception {
+             Long[] array = Stream.range(1L, 10000000L).reverse().toJavaArray(Long.class);
+             long s = System.currentTimeMillis();
+             SortTask task = new SortTask(array);
+             ForkJoinPool pool = new ForkJoinPool();
+             pool.invoke(task);
+             System.out.println(System.currentTimeMillis()-s);
+         }
+     }
+
+     /**
+      ,* low 初始值=0, high 初始值 = arr.length()-1
+      ,*/
+     private static int[] mergeSort(int[] arr, int low, int high) {
+         if (arr == null || low >= high) {
+             return arr;
+         }
+         int mid = low + ((high - low) >>> 1);
+
+         mergeSort(arr, low, mid);
+         mergeSort(arr, mid + 1, high);
+         //左右归并
+         merge(arr, low, mid, high);
+
+         return arr;
+     }
+
+     /**
+      ,* 合并两个有序的子数组 A[low,mid] A[mid+1,high]
+      ,*/
+     private static void merge(int[] arr, int low, int mid, int high) {
+         int[] tmp = new int[high - low + 1];
+         int i = low, j = mid + 1, k = 0;
+
+         while (i <= mid && j <= high) {
+             if (arr[i] < arr[j]) {
+                 tmp[k++] = arr[i++];
+             } else {
+                 tmp[k++] = arr[j++];
+             }
+         }
+
+         while (i <= mid) {
+             tmp[k++] = arr[i++];
+         }
+         while (j <= high) {
+             tmp[k++] = arr[j++];
+         }
+         //copy tmp into arr from low limit (high-low+1)
+         System.arraycopy(tmp, 0, arr, low, tmp.length);
+     }
+    #+END_SRC

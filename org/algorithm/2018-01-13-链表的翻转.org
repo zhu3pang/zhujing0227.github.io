@@ -1,0 +1,65 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 16:30
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 链表的翻转
+
+#+begin_export md
+---
+layout: post
+title: 链表的翻转
+categories: Algorithm
+tags: [data-structure]
+comments: true
+---
+#+end_export
+
+* Java 实现
+  #+BEGIN_SRC java
+    class LinkedCycle {
+
+        public static ListNode reverse(ListNode head) {
+            if (head == null || head.next == null) {
+                return head;
+            }
+            ListNode pre = head, cur = head.next, next;
+
+            while (cur != null) {
+                next = cur.next;
+                cur.next = pre;
+
+                pre = cur;
+                cur = next;
+            }
+
+            head.next = null;
+            return pre;
+        }
+
+        private static ListNode reverseRecursive(ListNode head){
+            if (head == null || head.next == null) {
+                return head;
+            }
+            ListNode next = head.next;
+            head.next = null;
+            ListNode r = reverseRecursive(next);
+            next.next = head;
+            return r;
+        }
+
+        @ToString
+        @AllArgsConstructor(staticName = "of")
+        static class ListNode {
+            int val;
+            ListNode next;
+
+            ListNode(int x) {
+                val = x;
+                next = null;
+            }
+        }
+    }
+
+  #+END_SRC

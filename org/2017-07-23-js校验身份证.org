@@ -1,0 +1,93 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 09:36
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: js 校验身份证
+
+#+begin_export md
+---
+layout: post
+title: js 校验身份证
+categories: mixed
+tags: [mixed]
+comments: true
+description: js 校验身份证的合法性
+---
+#+end_export
+
+* js 校验 18 位身份证
+  1. 身份证号码结构
+     #+begin_example
+     六位数字地址码, 八位数字出生日期码, 三位数字顺序码和一位数字校验码
+     #+end_example
+  2. 地址码
+     #+begin_example
+     表示编码对象常住户口所在县(市、旗、区)的行政区划代码, 按 gb/T2260 的规定执行.
+     #+end_example
+  3. 出生日期码（7-14 位）
+     #+begin_example
+     表示编码对象出生的年、月、日, 按 gb/T7408 的规定执行, 年、月、日代码之间不用分隔符
+     #+end_example
+  4. 顺序码（15-17 位）
+     #+begin_example
+     表示在同一地址码所标识的区域范围内, 对同年、同月、同日出生的人编定的顺序号, 顺序码的奇数分配给男性, 偶数分配给女性
+     #+end_example
+  5. 标识码
+     #+begin_example
+     作为尾号的校验码, 是由号码编制单位按统一的公式计算出来的, 如果某人的尾号是 0－9, 都不会出现 X, 但如果尾号是 10, 那么就得用 X 来代替
+     #+end_example
+
+#+BEGIN_SRC javascript
+  /*校验身份证合法性*/
+  function identityCodeValid(code) {
+      var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
+      var tip = "";
+      var pass= true;
+      //身份证格式
+      if(!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)){
+          tip = "身份证号格式错误";
+          pass = false;
+      }
+      //校验地址编码
+      else if(!city[code.substr(0,2)]){
+          tip = "身份证地址编码错误";
+          pass = false;
+      }
+      //验证校验位
+      //规则：
+      //1）将前面的身份证号码 17 位数分别乘以不同的系数.从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2
+      //2）将这 17 位数字和系数相乘的结果相加.
+      //3）用加出来和除以 11, 看余数是多少？
+      //4）余数只可能有 0 1 2 3 4 5 6 7 8 9 10 这 11 个数字.其分别对应的最后一位身份证的号码为 1 0 X 9 8 7 6 5 4 3 2.
+      //5）通过上面得知如果余数是 2, 就会在身份证的第 18 位数字上出现罗马数字的Ⅹ.如果余数是 10, 身份证的最后一位号码就是 2
+      else{
+          //18 位身份证需要验证最后一位校验位
+          if(code.length == 18){
+              code = code.split('');
+              //∑(ai×Wi)(mod 11)
+              //加权因子
+              var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
+              //第 18 位校验位
+              var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
+              var sum = 0;
+              var ai = 0;
+              var wi = 0;
+              for (var i = 0; i < 17; i++)
+              {
+                  ai = code[i];
+                  wi = factor[i];
+                  sum += ai * wi;
+              }
+              var last = parity[sum % 11];
+              if(parity[sum % 11] != code[17]){
+                  tip = "身份证校验位错误";
+                  pass =false;
+              }
+          }
+      }
+      if(!pass) mui_alert(tip);
+      return pass;
+  }
+#+END_SRC

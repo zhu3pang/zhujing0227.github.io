@@ -1,0 +1,93 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 17:48
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 利用 guava 进行 DTO 之间的参数转换
+
+#+begin_export md
+---
+layout: post
+title: 利用 guava 进行 DTO 之间的参数转换
+categories: mixed
+tags: [mixed]
+comments: true
+---
+#+end_export
+
+* 转换类
+  #+BEGIN_SRC java
+    import com.google.common.base.Converter;
+    import ...;
+
+    public class MyConverter<A, B> extends Converter<A, B> {
+        private A a;
+        private B b;
+
+        public MyConverter(@NotNull Class<? extends A> aClazz,
+                           @NotNull Class<? extends B> bClazz)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
+            Constructor<? extends A> aConstructor = aClazz.getDeclaredConstructor();
+            aConstructor.setAccessible(true);
+            this.a = aConstructor.newInstance();
+
+            Constructor<? extends B> bConstructor = bClazz.getDeclaredConstructor();
+            bConstructor.setAccessible(true);
+            this.b = bConstructor.newInstance();
+        }
+
+        @Override
+        @ParametersAreNonnullByDefault
+        protected B doForward(A a) {
+            BeanUtils.copyProperties(a, b);
+            return b;
+        }
+
+        @Override
+        @ParametersAreNonnullByDefault
+        protected A doBackward(B b) {
+            BeanUtils.copyProperties(b, a);
+            return a;
+        }
+
+    }
+   #+END_SRC
+
+* 使用转换类
+  #+BEGIN_SRC java
+    @Data
+    @Accessors(chain = true)
+    @NoArgsConstructor(staticName = "of")
+    public class User {
+        private String name;
+        private Integer age;
+    }
+
+    @Data
+    @Accessors(chain = true)
+    @NoArgsConstructor(staticName = "of")
+    public class UserOutputDTO {
+        private String name;
+    }
+
+    public class Main{
+        public static void main(String[] args){
+            MyConverter<User, UserOutputDTO> converter = new MyConverter<>(User.class, UserOutputDTO.class);
+
+            User zhuji = User.of().setName("zhuji").setAge(26);    //User(name:zhuji, age:26)
+            UserOutputDTO dto = converter.converte(zhuji);         //UserOutputDTO(name:zhuji)
+
+            User userFromDTO = converter.reverse().converte(dto);  //User(name:zhuji, age:null)
+
+            /* 不使用转换类时的操作 */
+            UserOutputDTO dto = UserOutputDTO.of()
+                .setName(zhuji.getName());  //UserOutputDTO(name:zhuji)
+
+            User userFromDTO = User.of()
+                .setName(dto.getName());    //User(name:zhuji, age:null)
+        }
+    }
+   #+END_SRC
+

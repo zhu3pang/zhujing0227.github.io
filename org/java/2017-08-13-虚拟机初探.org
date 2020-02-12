@@ -1,0 +1,20 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 17:36
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 虚拟机初探
+
+#+begin_export md
+---
+layout: post
+title: 虚拟机初探
+categories: jvm
+tags: [jvm]
+comments: true
+---
+#+end_export
+
+
+[[/assets/img/source/jvm/监控.png][jvm 监控]]

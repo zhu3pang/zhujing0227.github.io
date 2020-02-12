@@ -1,0 +1,63 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 09:26
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: git 命令积累
+
+#+begin_export md
+---
+layout: post
+title: git 命令积累
+categories: git
+tags: [git]
+comments: true
+description: some git commands used frequently
+---
+#+end_export
+
+
+* Branch
+ - 删除 github 上远程分支
+   #+begin_example
+   `git push origin :branch-name` or `git branch -r -d origin/<branch-name>`
+   #+end_example
+ - 远程分支回退
+   #+begin_example
+   `git reset --hard commit-id`
+   `git push --force`
+   > dangerous 慎用
+   #+end_example
+
+* Tag
+  [[https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001376951758572072ce1dc172b4178b910d31bc7521ee4000][标签管理]]
+ - 创建 tag
+   #+begin_example
+   `git tag -a v0.1 -m "version 0.1 released"`
+   #+end_example
+
+ - 指定 commit 创建
+   #+begin_example
+   `git tag -a v0.1 -m "version 0.1 released" 1094adb`
+   #+end_example
+
+ - 查看 tag
+   #+begin_example
+   `git show <tagname>`
+   #+end_example
+
+ - 删除本地 tag
+   #+begin_example
+   `git tag --delete <tagname>`
+   #+end_example
+  
+ - 删除远程 tag
+   #+begin_example
+   `git push origin :<tagname>` or `git push --delete origin <tagname>`
+   #+end_example
+
+ - push 到远程 
+   #+begin_example
+   `git push origin <tagname>` or push 所有 `git push --tags` 
+   #+end_example 

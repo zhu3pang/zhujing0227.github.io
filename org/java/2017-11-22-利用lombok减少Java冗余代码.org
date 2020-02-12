@@ -1,0 +1,205 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 17:49
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: 利用 lombok 减少 Java 冗余代码
+
+#+begin_export md
+---
+layout: post
+title: 利用 lombok 减少 Java 冗余代码
+categories: lombok
+tags: [lombok]
+comments: true
+---
+#+end_export
+
+* lombok
+  lombok 是在编译期间生成的字节码,不会影响程序的运行性能,[[https://projectlombok.org/][lombok 官网]]
+
+  常用的几个注解
+  #+begin_quote
+  @Data   ：注解在类上；提供类所有属性的 getter 和 setter 方法, 此外还提供了 equals、canEqual、hashCode、toString 方法
+  @Accessors(chain=true,fluent=true):链式调用,当 chain=true 时,只是链式调用;当 fluent=true 时,getter/setter 方法前面没有 get/set
+  @Setter：注解在属性上；为属性提供 setter 方法
+  @Getter：注解在属性上；为属性提供 getter 方法
+  @Log4j：注解在类上；为类提供一个 属性名为 log 的 log4j 日志对象
+  @NoArgsConstructor：注解在类上；为类提供一个无参的构造方法
+  @AllArgsConstructor：注解在类上；为类提供一个全参的构造方法
+  #+end_quote
+
+  #+BEGIN_SRC java
+    @Data
+    // @Accessors(chain=true)
+    @AllArgsConstructor
+    @NoArgsConstructor(staticName = "of")
+    public class User {
+
+        private String name;
+        private Integer age;
+
+    }
+
+    public class User{
+
+        private String name;
+        private Integer age;
+
+        getter/setter...
+
+        public User(String name, Integer age){
+            this.name = name;
+            this.age = age;
+        }
+
+        private User(){}
+
+        public static User of(){
+            return new User();
+        }
+    }
+
+  #+END_SRC
+
+  调用
+  #+BEGIN_SRC java
+    public class Main{
+
+        public static void main(String[] args){
+            //没有@Accessors 注解
+            User user = User.of();
+            user.setName("zhuji");
+            user.setAge(26);    //User(name:zhuji, age:26)
+
+            //有@Accessors(chain=true)注解
+            User pangzi = User.of()
+                .setName("pangzi")
+                .setAge(2);     //User(name:pangzi, age:2)
+
+            //有@Accessors(fluent=true)注解
+            User shazi = User.of()
+                .name("shazi")
+                .age(1);        //User(name:shazi, age:1)
+            /*
+            不建议使用 fluent=true,一般此类注解多用于 POJO 等需要序列化的类上,序列化依赖于 getter/setter 方法,
+            如果使用 fluent=true 序列化时由于找不到 get/set 方法而失败,谨记!!
+            ,*/
+        }
+    }
+  #+END_SRC
+
+* @Builder 注解
+  @Singular: 给类的集合属性添加一个单数的 set 方法,`本注解需要配合@Builder 一起使用`
+  使用建造者模式创建类实例
+  #+BEGIN_SRC java
+    @Builder
+    public class BuilderExample {
+      private String name;
+      private int age;
+      @Singular private Set<String> occupations;
+    }
+
+    public class BuilderExample {
+      private String name;
+      private int age;
+      private Set<String> occupations;
+
+      BuilderExample(String name, int age, Set<String> occupations) {
+        this.name = name;
+        this.age = age;
+        this.occupations = occupations;
+      }
+
+      public static BuilderExampleBuilder builder() {
+        return new BuilderExampleBuilder();
+      }
+
+      public static class BuilderExampleBuilder {
+        private String name;
+        private int age;
+        private java.util.ArrayList<String> occupations;
+
+        BuilderExampleBuilder() {
+        }
+
+        public BuilderExampleBuilder name(String name) {
+          this.name = name;
+          return this;
+        }
+
+        public BuilderExampleBuilder age(int age) {
+          this.age = age;
+          return this;
+        }
+
+        public BuilderExampleBuilder occupation(String occupation) {
+          if (this.occupations == null) {
+            this.occupations = new java.util.ArrayList<String>();
+          }
+          this.occupations.add(occupation);
+          return this;
+        }
+
+        public BuilderExampleBuilder occupations(Collection<? extends String> occupations) {
+          if (this.occupations == null) {
+            this.occupations = new java.util.ArrayList<String>();
+          }
+          this.occupations.addAll(occupations);
+          return this;
+        }
+
+        public BuilderExampleBuilder clearOccupations() {
+          if (this.occupations != null) {
+            this.occupations.clear();
+          }
+          return this;
+        }
+
+        public BuilderExample build() {
+          // complicated switch statement to produce a compact properly sized immutable set omitted.
+          // go to https://projectlombok.org/features/Singular-snippet.html to see it.
+          Set<String> occupations = ...;
+          return new BuilderExample(name, age, occupations);
+        }
+
+        @java.lang.Override
+        public String toString() {
+          return "BuilderExample.BuilderExampleBuilder(name = " + this.name + ", age = " + this.age + ", occupations = " + this.occupations + ")";
+        }
+      }
+    }
+  #+END_SRC
+
+* 调用
+  #+BEGIN_SRC java
+    public class Main{
+        public static void main(String[] args){
+            BuilderExample example = BuilderExample.builder()
+                .name("pangzi")
+                .age(2)
+                .build();   //BuilderExample(name:pangzi, age:1)
+
+            //example.occupation("test1");    //BuilderExample(name:pangzi, age:2, occupations:[test1])
+
+            example.occupations(List.of("test1","test2"));  //BuilderExample(name:pangzi, age:2, occupations:[test1, test2])
+        }
+    }
+  #+END_SRC
+
+* @Delegate 利用注解调用字段或方法返回值生成代理方法
+  `Any field or no-argument method can be annotated with @Delegate to let lombok generate delegate methods that forward the call to this field (or the result of invoking this method).`
+  #+BEGIN_SRC java
+    public class Main implements RestOperations{
+
+        @Delegate
+        private RestTemplate restTemplate;
+        /*
+        使用@Delegate 让 lombok 使用 restTemplate 字段自动生成需要实现 RestOperations 的方法
+        ,*/
+    }
+  #+END_SRC
+
+* tips
+  在项目根目录加入`lombok.comfig`配置文件可以自定义一些配置,例如`lombok.var.flagUsage=ALLOW`配置可以使用 var,不需要声明类型`var a = 1`.其他的各种配置参考[[https://projectlombok.org/][官网]]

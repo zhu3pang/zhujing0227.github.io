@@ -1,0 +1,67 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 10:09
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: jenkins 持续集成部署
+
+#+begin_export md
+---
+layout: post
+title: jenkins 持续集成部署
+categories: jenkins
+tags: [jenkins]
+comments: true
+description: Jenkins 自动部署
+---
+#+end_export
+
+- 下载[jenkins](https://jenkins.io/)最新 war 包
+
+在`jenkins.war`所在目录执行命令：`java -jar jenkins.war`, 浏览器中访问[http://localhost:8080/](http://localhost:8080/)
+
+- 安装插件
+
+`Maven Integration plugin`、`Deploy to container Plugin`
+
+- 添加新项目
+
+以上步骤
+> 参考：[廖雪峰 jenkins 持续集成](https://www.liaoxuefeng.com/article/001463233913442cdb2d1bd1b1b42e3b0b29eb1ba736c5e000)
+
+<!--more-->
+
+-----------------
+<!--more-->
+
+- 添加构建后操作
+
+![](/assets/img/source/构建后操作.png "构建后操作")
+
+`Manager user name` `Manager password`为 tomcat `conf/tomcat-user.xml`中配置的 username 和 password
+
+注意四个角色都要配上, 否则构建部署时会报异常：`The username you provided is not allowed to use the text-based Tomcat Manager (error 403)`.
+
+![](/assets/img/source/tomcat 用户配置.png "tomcat 用户配置")
+
+-------
+
+**更新 gradle 构建**
+
+在启动 Jenkins 时需要添加参数`-Dhudson.util.ProcessTree.disable=true`
+
+`java -Dhudson.util.ProcessTree.disable=true -jar jenkins.war --httpPort=8899 >~/out/jenkins/jenkins"${current_date}".out 2>&1 &'`
+
+1. 在全局工具中添加 gradle
+2. 添加构建后 shell 命令
+
+```shell
+lsof -ti :9999 | xargs kill -9
+current_date=`date +-%Y-%m-%d`
+
+rm -rf /Users/zhuji/jenkins/rigger
+cp -r /Users/zhuji/.jenkins/workspace/rigger /Users/zhuji/jenkins/rigger
+cd /Users/zhuji/jenkins/rigger
+gradle bootRun >>/Users/zhuji/out/rigger/rigger"${current_date}".out 2>&1 &
+```

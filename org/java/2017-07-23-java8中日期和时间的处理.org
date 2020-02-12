@@ -1,0 +1,68 @@
+# -*-mode:org;coding:utf-8-*-
+# Created:  zhuji 02/12/2020
+# Modified: zhuji 02/12/2020 17:16
+
+#+OPTIONS: toc:nil num:nil
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+#+TITLE: java8 中日期和时间的处理
+
+#+begin_export md
+---
+layout: post
+title: java8 中日期和时间的处理
+categories: java8
+tags: [java8]
+comments: true
+---
+#+end_export
+
+[[https://www.liaoxuefeng.com/article/00141939241051502ada88137694b62bfe844cd79e12c32000][如何在 java8 中愉快的处理日期和时间]]
+
+* 获取当前周第一天和最后一天
+  #+BEGIN_SRC java
+    //2018-01-25T10:00:58.749
+    LocalDateTime now = LocalDateTime.now();
+    //获取周一的 00:00:00     2018-01-22T00:00:00.749
+    LocalDateTime startOfWeek = now.with(DayOfWeek.MONDAY).withHour(0).withMinute(0).withSecond(0);
+    //获取周日的 23:59:59     2018-01-28T23:59:59.749
+    LocalDateTime endOfWeek = now.with(DayOfWeek.SUNDAY).withHour(23).withMinute(59).withSecond(59);
+  #+END_SRC
+
+* LocalDate、LocalDateTime 与 timestamp、Date 的转换
+** 1. LocalDate 转 Date
+   #+BEGIN_SRC java
+     LocalDate nowLocalDate = LocalDate.now();
+     Date date = Date.from(nowLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+  #+END_SRC
+
+** 2. LocalDateTime 转 Date
+   #+BEGIN_SRC java
+     LocalDateTime localDateTime = LocalDateTime.now();
+     Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+  #+END_SRC
+** 3. Date 转 LocalDateTime(LocalDate)
+   #+BEGIN_SRC java
+     Date date = new Date();
+     LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+     LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+  #+END_SRC
+** 4. LocalDate 转时间戳
+   #+BEGIN_SRC java
+     LocalDate localDate = LocalDate.now();
+     long timestamp = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+  #+END_SRC
+** 5. LocalDateTime 转时间戳
+   #+BEGIN_SRC java
+     LocalDateTime localDateTime = LocalDateTime.now();
+     long timestamp = localDateTime.toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
+
+  #+END_SRC
+** 6. 时间戳转 LocalDateTime(LocalDate)
+   #+BEGIN_SRC java
+     long timestamp = System.currentTimeMillis();
+     LocalDate localDate = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+     LocalDateTime localDateTime = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+  #+END_SRC
