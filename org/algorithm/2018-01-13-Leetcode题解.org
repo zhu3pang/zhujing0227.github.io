@@ -18,8 +18,12 @@ comments: true
 
 * Table of Contents                                                     :TOC:
 - [[#two-sum][Two Sum]]
-  -  [[#暴力求解-on2][暴力求解 O(n^2)]]
+  - [[#暴力求解-on2][暴力求解 O(n^2)]]
   -  [[#hashmap-on][HashMap O(n)]]
+  - [[#两数之和拓展--输入有序数组][两数之和拓展--输入有序数组]]
+- [[#three-sum][Three Sum]]
+- [[#four-sum][Four Sum]]
+- [[#four-sum-ii][Four Sum-ii]]
 - [[#maximum-subarray-最大子数组][Maximum Subarray 最大子数组]]
   - [[#线性时间算法-on][线性时间算法. O(n)]]
   - [[#分治算法-onlg-n][分治算法. O(nlg n)]]
@@ -27,14 +31,33 @@ comments: true
 - [[#unique-paths-唯一路径][Unique Paths 唯一路径]]
   - [[#递归求解][递归求解]]
   - [[#动态规划-omn][动态规划 O(m*n)]]
-  - [[#dp-优化-空间复杂度从-omn 降到-ominm-n][DP 优化: 空间复杂度从 O(m*n)降到 O(min(m, n))]]
+  - [[#dp-优化-空间复杂度从-omn降到-ominm-n][DP 优化: 空间复杂度从 O(m*n)降到 O(min(m, n))]]
+- [[#unique-paths-ii][Unique Paths-ii]]
 - [[#kth-largest-element-in-an-array][Kth Largest Element in an Array]]
   - [[#快排法---参考快速排序][快排法   参考快速排序]]
   - [[#最小堆法--参考最小堆法][最小堆法  参考最小堆法]]
-- [[#add-two-numbers][Add Two Numbers]]
-- [[#linked-list-cycle-循环链表][Linked List Cycle 循环链表]]
-  - [[#拓展][拓展]]
-- [[#intersection-of-two-linked-lists-链表相交][intersection-of-two-linked-lists 链表相交]]
+- [[#链表][链表]]
+  - [[#linked-list-cycle-循环链表][Linked List Cycle 循环链表]]
+    - [[#拓展][拓展]]
+  - [[#intersection-of-two-linked-lists-链表相交][intersection-of-two-linked-lists 链表相交]]
+  - [[#反转链表-1][反转链表 1]]
+  - [[#反转链表-2][反转链表 2]]
+  - [[#删除链表的倒数第-n-个节点][删除链表的倒数第 N 个节点]]
+  - [[#两数相加][两数相加]]
+  - [[#两数相加-ii][两数相加 ii]]
+  - [[#合并两个有序列表][合并两个有序列表]]
+    - [[#迭代][迭代]]
+    - [[#递归][递归]]
+    - [[#拓展--合并两个有序数组][拓展--合并两个有序数组]]
+  - [[#合并-k-个有序列表][合并 K 个有序列表]]
+    - [[#优先队列][优先队列]]
+    - [[#分治][分治]]
+  - [[#移除链表元素][移除链表元素]]
+  - [[#删除排序列表中的重复元素][删除排序列表中的重复元素]]
+  - [[#删除排序列表中的重复元素-ii][删除排序列表中的重复元素 ii]]
+  - [[#两两交换链表中的节点][两两交换链表中的节点]]
+  - [[#排序链表][排序链表]]
+  - [[#从链表中删去总和值为零的连续节点][从链表中删去总和值为零的连续节点]]
 - [[#water-and-jug--水壶问题][water and jug  水壶问题]]
 - [[#过桥问题][过桥问题]]
 - [[#位操作][位操作]]
@@ -55,14 +78,36 @@ comments: true
   - [[#判断二进制的第-n-位为-1-或-0][判断二进制的第 n 位为 1 或 0]]
   - [[#将二进制的第-n-位设置为-1][将二进制的第 n 位设置为 1]]
   - [[#将二进制的第-n-位设置为-0][将二进制的第 n 位设置为 0]]
+  - [[#二进制求和][二进制求和]]
+- [[#无重复字符的最长子串][无重复字符的最长子串]]
+- [[#数组形式的整数加法][数组形式的整数加法]]
+- [[#重复的子字符串][重复的子字符串]]
 - [[#powx-n][powx-n]]
 - [[#寻找重复数][寻找重复数]]
 - [[#快乐数][快乐数]]
 - [[#各位相加][各位相加]]
 - [[#最长回文子串][最长回文子串]]
+  - [[#拓展--中心扩展法][拓展--中心扩展法]]
 - [[#有效的括号][有效的括号]]
 - [[#简化路径][简化路径]]
 - [[#玻璃杯检测][玻璃杯检测]]
+- [[#外观数列][外观数列]]
+- [[#有序数组的平方][有序数组的平方]]
+- [[#树][树]]
+  - [[#相同的树][相同的树]]
+    - [[#递归-1][递归]]
+  - [[#对称二叉树][对称二叉树]]
+    - [[#递归-2][递归]]
+    - [[#迭代-1][迭代]]
+  - [[#二叉树层次遍历][二叉树层次遍历]]
+    - [[#bfs][BFS]]
+  - [[#二叉树层次遍历-ii][二叉树层次遍历 ii]]
+    - [[#bfs-1][BFS]]
+  - [[#二叉树最小深度][二叉树最小深度]]
+  - [[#有序数组转换为二叉树][有序数组转换为二叉树]]
+  - [[#平衡二叉树][平衡二叉树]]
+    - [[#自底至顶-bottom-up][自底至顶 Bottom-Up]]
+    - [[#自顶至底-top-down][自顶至底 Top-Down]]
 
 * Two Sum
 
@@ -77,7 +122,7 @@ Because nums[0] + nums[1] = 2 + 7 = 9,
 return [0, 1].
 #+end_example
 
-**  暴力求解 O(n^2)
+** 暴力求解 O(n^2)
 #+begin_example
 two-sum(A, key):
 for i=1 to A.length-1
@@ -101,6 +146,114 @@ for i=1 to A.length-1
   }
 #+end_src
    ------------
+
+** 两数之和拓展--输入有序数组
+https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/submissions/
+#+BEGIN_SRC java
+  public int[] twoSum(int[] numbers, int target) {
+      if(numbers==null || numbers.length < 2) return null;
+      int L=0, R=numbers.length-1;
+      while(L<R){
+          int sum = numbers[L] + numbers[R];
+          if(sum==target) return new int[]{L+1, R+1};
+          else if(sum<target) L++;
+          else if(sum>target) R--;
+      }
+      return null;
+  }
+#+END_SRC
+* Three Sum 
+排序+双指针
+#+BEGIN_SRC java
+  public List<List<Integer>> threeSum(int[] nums) {
+      List<List<Integer>> res = new ArrayList<>();
+      int len = nums.length;
+      if(nums == null || len<3) return res;
+      Arrays.sort(nums);
+      for(int i = 0; i < len; i++){
+          if(nums[i] > 0) break;
+          if(i>0 && nums[i]==nums[i-1]) continue;
+          int L = i + 1;
+          int R = len - 1;
+          while(L < R){
+              int sum = nums[L] + nums[i] + nums[R];
+              if(sum==0){
+                  res.add(Arrays.asList(nums[L], nums[i], nums[R]));
+                  while(L<R && nums[L] == nums[L+1]) L++;//去重
+                  while(L<R && nums[R] == nums[R-1]) R--;//去重
+                  L++;
+                  R--;
+              }else if(sum<0){
+                  L++;
+              }else if(sum>0){
+                  R--;
+              }
+          }
+      }
+      return res;
+  }
+#+END_SRC
+
+* Four Sum
+https://leetcode-cn.com/problems/4sum/
+排序+双指针, 见[[Three Sum]] [[两数之和拓展--输入有序数组]]
+#+BEGIN_SRC java
+  public List<List<Integer>> fourSum(int[] nums, int target) {
+      List<List<Integer>> res = new ArrayList<>();
+      if (nums == null || nums.length < 4) return res;
+      int len = nums.length;
+      Arrays.sort(nums);
+      for (int i = 0; i < len - 3; i++) {
+          if (i > 0 && nums[i] == nums[i - 1]) continue;
+          for (int j = i + 1; j < len - 2; j++) {
+              if (j > i+1 && nums[j] == nums[j - 1]) continue;
+              int L = j + 1;
+              int R = len - 1;
+              while (L < R) {
+                  int sum = nums[i] + nums[j] + nums[L] + nums[R];
+                  if (sum == target) {
+                      res.add(Arrays.asList(nums[i], nums[j], nums[L], nums[R]));
+                      while(L<R && nums[L]==nums[L+1]) L++;//去重
+                      while(L<R && nums[R]==nums[R-1]) R--;//去重
+                      L++;
+                      R--;
+                  } else if (sum < target) {
+                      L++;
+                  } else {
+                      R--;
+                  }
+              }
+          }
+      }
+      return res;
+  }
+#+END_SRC
+
+* Four Sum-ii
+https://leetcode-cn.com/problems/4sum-ii/
+https://leetcode-cn.com/problems/4sum-ii/solution/chao-ji-rong-yi-li-jie-de-fang-fa-si-shu-xiang-jia/
+#+BEGIN_SRC java
+  public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+      int res = 0;
+      Map<Integer, Integer> map = new HashMap<>();
+      for(int i=0; i<A.length; i++){
+          for(int j=0; j<B.length; j++){
+              int sumAB = A[i] + B[j];
+              //记录出现sumAB的次数
+              if(map.containsKey(sumAB)) map.put(sumAB, map.get(sumAB)+1);
+              else map.put(sumAB, 1);
+          }
+      }
+      for(int k=0; k<C.length; k++){
+          for(int l=0; l<D.length; l++){
+              int sumCD = -(C[k] + D[l]);
+              if(map.containsKey(sumCD)) res += map.get(sumCD);
+          }
+      }
+      return res;
+  }
+#+END_SRC
+
 * Maximum Subarray 最大子数组
 
 Find the contiguous subarray within an array (containing at least one number) which has the largest sum.
@@ -110,80 +263,77 @@ For example, given the array [-2, 1, -3, 4, -1, 2, 1, -5, 4],
 the contiguous subarray [4, -1, 2, 1] has the largest sum = 6.
 
 ** 线性时间算法. O(n)
+   curSum 记录每次迭代 A[0..i]的最大子数组
+   #+begin_src java
+     private static int maxSubArray(int[] arr) {
+         if (arr.length == 1) return arr[0];
 
-curSum 记录每次迭代 A[0..i]的最大子数组
-#+begin_src java
-  private static int maxSubArray(int[] arr) {
-      if (arr.length == 1) return arr[0];
-
-      int max = arr[0], curSum = arr[0];
-      for (int i = 1; i < arr.length; i++) {
-          curSum = Math.max(curSum + arr[i], arr[i]);
-          max = Math.max(max, curSum);
-      }
-      return max;
-  }
-#+end_src
+         int max = arr[0], curSum = arr[0];
+         for (int i = 1; i < arr.length; i++) {
+             curSum = Math.max(curSum + arr[i], arr[i]);
+             max = Math.max(max, curSum);
+         }
+         return max;
+     }
+   #+end_src
 
 ** 分治算法. O(nlg n)
+   最大子数组必定在左半部分/有半部分或跨越中间的, 分别计算三部分的最大子数组, 三者最大值即为最终的最大子数组.
+   #+begin_src java
+     private static int maxSubArrayDivide(int[] arr, int left, int right) {
+         if (left >= right) {
+             return arr[left];
+         }
 
-最大子数组必定在左半部分/有半部分或跨越中间的, 分别计算三部分的最大子数组, 三者最大值即为最终的最大子数组.
-#+begin_src java
-  private static int maxSubArrayDivide(int[] arr, int left, int right) {
-      if (left >= right) {
-          return arr[left];
-      }
+         int mid = left + ((right - left) >> 1);
+         //左半部分最大子数组
+         int leftSum = maxSubArrayDivide(arr, left, mid);
+         //右半部分最大子数组
+         int rightSum = maxSubArrayDivide(arr, mid + 1, right);
+         //跨越中点的最大子数组
+         int crossSum = crossMiddle(arr, left, mid, right);
 
-      int mid = left + ((right - left) >> 1);
-      //左半部分最大子数组
-      int leftSum = maxSubArrayDivide(arr, left, mid);
-      //右半部分最大子数组
-      int rightSum = maxSubArrayDivide(arr, mid + 1, right);
-      //跨越中点的最大子数组
-      int crossSum = crossMiddle(arr, left, mid, right);
+         return Math.max(leftSum, Math.max(rightSum, crossSum));
+     }
 
-      return Math.max(leftSum, Math.max(rightSum, crossSum));
-  }
+     private static int crossMiddle(int[] arr, int left, int mid, int right) {
+         int sum = 0, leftMax = Integer.MIN_VALUE, rightMax = Integer.MIN_VALUE;
+         //从 mid 出发, 左边最大子数组
+         for (int i = mid; i >= left; i--) {
+             sum += arr[i];
+             if (sum > leftMax) {
+                 leftMax = sum;
+             }
+         }
 
-  private static int crossMiddle(int[] arr, int left, int mid, int right) {
-      int sum = 0, leftMax = Integer.MIN_VALUE, rightMax = Integer.MIN_VALUE;
-      //从 mid 出发, 左边最大子数组
-      for (int i = mid; i >= left; i--) {
-          sum += arr[i];
-          if (sum > leftMax) {
-              leftMax = sum;
-          }
-      }
-
-      sum = 0;
-      //从 mid+1 出发右边最大子数组
-      for (int i = mid + 1; i <= right; i++) {
-          sum += arr[i];
-          if (sum > rightMax) {
-              rightMax = sum;
-          }
-      }
-      return leftMax + rightMax;
-  }
-#+end_src
+         sum = 0;
+         //从 mid+1 出发右边最大子数组
+         for (int i = mid + 1; i <= right; i++) {
+             sum += arr[i];
+             if (sum > rightMax) {
+                 rightMax = sum;
+             }
+         }
+         return leftMax + rightMax;
+     }
+   #+end_src
 
 ** 动态规划. O(n)
+   与线性时间一样, 只是保存了每一步的最大子数组
+   #+begin_src java
+     public static int maxSubArrayDP(int[] arr) {
+         //dp[i] means the maximum subarray ending with A[i];
+         int[] dp = new int[arr.length];
+         dp[0] = arr[0];
+         int max = dp[0];
 
-与线性时间一样, 只是保存了每一步的最大子数组
-#+begin_src java
-  public static int maxSubArrayDP(int[] arr) {
-      //dp[i] means the maximum subarray ending with A[i];
-      int[] dp = new int[arr.length];
-      dp[0] = arr[0];
-      int max = dp[0];
-
-      for(int i = 1; i < arr.length; i++){
-          dp[i] = Math.max(arr[i], dp[i-1] + arr[i]);
-          max = Math.max(max, dp[i]);
-      }
-      return max;
-  }
-#+end_src
+         for(int i = 1; i < arr.length; i++){
+             dp[i] = Math.max(arr[i], dp[i-1] + arr[i]);
+             max = Math.max(max, dp[i]);
+         }
+         return max;
+     }
+   #+end_src
 
 ------------
 * Unique Paths 唯一路径
@@ -195,62 +345,89 @@ The robot can only move either down or right at any point in time. The robot is 
 How many possible unique paths are there?
 
 ** 递归求解
-
-当前位置的结果 = 从当前位置向下走一步的结果 + 与从当前位置向右走一步的结果
-#+begin_src java
-  private static int uniquePathsRecursive(int m, int n) {
-      if (m == 0 || n == 0) {
-          return 0;
-      }
-      if (m == 1 || n == 1) {
-          return 1;
-      }
-      return uniquePathsRecursive(m, n - 1) + uniquePathsRecursive(m - 1, n);
-  }
-#+end_src
+   当前位置的结果 = 从当前位置向下走一步的结果 + 与从当前位置向右走一步的结果
+   #+begin_src java
+     private static int uniquePathsRecursive(int m, int n) {
+         if (m == 0 || n == 0) {
+             return 0;
+         }
+         if (m == 1 || n == 1) {
+             return 1;
+         }
+         return uniquePathsRecursive(m, n - 1) + uniquePathsRecursive(m - 1, n);
+     }
+   #+end_src
 
 ** 动态规划 O(m*n)
+   递归存在大量重复的计算, 动态规划中使用数组保存了之前的计算结果.
+   #+begin_src java
+     private static int uniquePaths(int m, int n) {
+         int[][] tab = new int[m][n];
 
-递归存在大量重复的计算, 动态规划中使用数组保存了之前的计算结果.
-#+begin_src java
-  private static int uniquePaths(int m, int n) {
-      int[][] tab = new int[m][n];
+         for (int i = 0; i < m; i++) {
+             for (int j = 0; j < n; j++) {
+                 if (i == 0 || j == 0) {
+                     tab[i][j] = 1;
+                 } else {
+                     tab[i][j] = tab[i - 1][j] + tab[i][j - 1];
+                 }
+             }
+         }
+         return tab[m - 1][n - 1];
+     }
+   #+end_src
 
-      for (int i = 0; i < m; i++) {
-          for (int j = 0; j < n; j++) {
-              if (i == 0 || j == 0) {
-                  tab[i][j] = 1;
+** DP 优化: 空间复杂度从 O(m*n)降到 O(min(m, n))
+   #+begin_src java
+     private static int uniquePaths(int m, int n){
+         //assume m >= n
+         if(m < n){
+             int t = m;
+             m = n;
+             n = t;
+         }
+         int[] tab = new int[n];
+         tab[0] = 1;
+
+         for(int i = 0; i < m; i++){
+             for(int j = 1; j < n; j++){
+                 tab[j] += tab[j - 1];
+             }
+         }
+         return tab[n - 1];
+     }
+   #+end_src
+
+------------
+* Unique Paths-ii
+https://leetcode-cn.com/problems/unique-paths-ii/
+#+BEGIN_SRC java
+  public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+      if (obstacleGrid == null || obstacleGrid[0].length == 0) return 0;
+      int rol = obstacleGrid.length;
+      int col = obstacleGrid[0].length;
+      for (int i = 0; i < rol; i++) {
+          for (int j = 0; j < col; j++) {
+              // 判断是否有障碍物，若有，当前点对结果贡献为0，直接置0即可
+              if (obstacleGrid[i][j] == 1) {
+                  obstacleGrid[i][j] = 0;
+                  continue;
+              }
+              if (i == 0 && j == 0) {
+                  obstacleGrid[i][j] = 1;
+              } else if (i == 0) {
+                  obstacleGrid[i][j] = obstacleGrid[i][j - 1];// 第一行格点值等于左边格点值
+              } else if (j == 0) {
+                  obstacleGrid[i][j] = obstacleGrid[i - 1][j];// 第一列格点值等于上边格点值
               } else {
-                  tab[i][j] = tab[i - 1][j] + tab[i][j - 1];
+                  obstacleGrid[i][j] = obstacleGrid[i - 1][j] + obstacleGrid[i][j - 1];
               }
           }
       }
-      return tab[m - 1][n - 1];
+      return obstacleGrid[rol - 1][col - 1];
   }
-#+end_src
+#+END_SRC 
 
-** DP 优化: 空间复杂度从 O(m*n)降到 O(min(m, n))
-#+begin_src java
-  private static int uniquePaths(int m, int n){
-      //assume m >= n
-      if(m < n){
-          int t = m;
-          m = n;
-          n = t;
-      }
-      int[] tab = new int[n];
-      tab[0] = 1;
-
-      for(int i = 0; i < m; i++){
-          for(int j = 1; j < n; j++){
-              tab[j] += tab[j - 1];
-          }
-      }
-      return tab[n - 1];
-  }
-#+end_src
-
-------------
 * Kth Largest Element in an Array
 
 Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
@@ -311,8 +488,203 @@ Given [3, 2, 1, 5, 6, 4] and k = 2, return 5.
    与之类似求 Kth Smallest Element in an Array 可以用[[./排序之堆排序][最大堆]]求解
 
 ------------
-* Add Two Numbers
+* 链表
+** Linked List Cycle 循环链表
 
+ Given a linked list, determine if it has a cycle in it.
+
+ 利用快慢两个指针, 如果链表存在环, 那么必然存在某个点快慢两个指针重合.
+ #+begin_src java
+   public boolean hasCycle(ListNode head) {
+       if (head == null || head.next == null) {
+           return false;
+       }
+
+       ListNode slow = head, fast = head;
+       while(fast != null && fast.next != null){
+           slow = slow.next;
+           fast = fast.next.next;
+           if(slow == fast)    return true;
+       }
+       return false;
+   }
+   class ListNode {
+       int val;
+       ListNode next;
+       ListNode(int x) {
+           val = x;
+           next = null;
+       }
+   }
+ #+end_src
+
+*** 拓展
+
+ Given a linked list, return the node where the cycle begins. If there is no cycle, return null.
+
+ 在判断了存在环的情况下, 设 head 节点到环起点距离为 A, 起点到 slow 节点距离为 B, 环长为 C.
+
+ slow 指针移动距离为 A+B, fast 指针移动距离为 A+B+C, 2(A+B) = A+B+C => C = A+B, slow 指针继续移动到起点的距离为 C-B = A, 即 head 与 slow 同步移动, 当 head==slow 时, 即为环的起点.
+ #+begin_example
+ 2(F + a) = F + N(a + b) + a
+ 2F + 2a = F + 2a + b + (N - 1)(a + b)
+ F = b + (N - 1)(a + b)
+ #+end_example
+ #+begin_src java
+ public ListNode detectCycle(ListNode head) {
+     if (head == null || head.next == null) {
+         return null;
+     }
+     ListNode slow = head, fast = head;
+     while (fast != null && fast.next != null){
+         slow = slow.next;
+         fast = fast.next.next;
+         if (slow == fast){
+             ListNode s = head;
+             while (s != slow){
+                 s = s.next;
+                 slow = slow.next;
+             }
+             return s;
+         }
+     }
+     return null;
+ }
+ #+end_src
+
+ ------------
+** intersection-of-two-linked-lists 链表相交
+   https://leetcode-cn.com/problems/intersection-of-two-linked-lists/solution/intersection-of-two-linked-lists-shuang-zhi-zhen-l/
+   #+begin_src scala
+     /**
+       ,* Definition for singly-linked list.
+       ,* public class ListNode {
+       ,*     int val;
+       ,*     ListNode next;
+       ,*     ListNode(int x) {
+       ,*         val = x;
+       ,*         next = null;
+       ,*     }
+       ,* }
+       ,*/
+     public class Solution {
+       public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+         /**
+           定义两个指针, 第一轮让两个到达末尾的节点指向另一个链表的头部, 最后如果相遇则为交点(在第一轮移动中恰好抹除了长度差)
+           两个指针等于移动了相同的距离, 有交点就返回, 无交点就是各走了两条指针的长度
+           ,**/
+         if(headA == null || headB == null) return null;
+         ListNode p1 = headA, p2 = headB;
+         // 在这里第一轮体现在 pA 和 pB 第一次到达尾部会移向另一链表的表头, 而第二轮体现在如果 pA 或 pB 相交就返回交点, 不相交最后就是 null==null
+         while (p1 != p2) {
+           p1 = p1 == null ? headB : p1.next;
+           p2 = p2 == null ? headA : p2.next;
+         }
+         return p1;
+       }
+     }
+   #+end_src
+
+** 反转链表 1
+   https://leetcode-cn.com/problems/reverse-linked-list/
+   #+BEGIN_SRC java
+     class LinkedCycle {
+
+         public static ListNode reverse(ListNode head) {
+             if (head == null || head.next == null) {
+                 return head;
+             }
+             ListNode pre = head, cur = head.next, next;
+
+             while (cur != null) {
+                 next = cur.next;
+                 cur.next = pre;
+
+                 pre = cur;
+                 cur = next;
+             }
+
+             head.next = null;
+             return pre;
+         }
+
+         private static ListNode reverseRecursive(ListNode head){
+             if (head == null || head.next == null) {
+                 return head;
+             }
+             ListNode next = head.next;
+             head.next = null;
+             ListNode r = reverseRecursive(next);
+             next.next = head;
+             return r;
+         }
+
+         @ToString
+         @AllArgsConstructor(staticName = "of")
+         static class ListNode {
+             int val;
+             ListNode next;
+
+             ListNode(int x) {
+                 val = x;
+                 next = null;
+             }
+         }
+     }
+
+   #+END_SRC
+** 反转链表 2
+   https://leetcode-cn.com/problems/reverse-linked-list-ii/
+   - 定位到要反转部分的头节点 2，head = 2；前驱结点 1，pre = 1；
+   - 当前节点的下一个节点 3 调整为前驱节点的下一个节点 1->3->2->4->5,
+   - 当前结点仍为 2， 前驱结点依然是 1，重复上一步操作。。。
+   - 1->4->3->2->5.
+     #+BEGIN_SRC java
+       public ListNode reverseBetween(ListNode head, int m, int n) {
+           if(head==null || head.next == null){
+               return head;
+           }
+           ListNode tmp = new ListNode(0);
+           tmp.next = head;
+           ListNode pre = tmp;
+           for(int i = 1; i<= m-1; i++){
+               pre = pre.next;//定位到要反转部分头节点的前驱节点
+           }
+
+           head = pre.next;//要反转部分的头节点
+           for(int i = m; i<n; i++){
+               ListNode ne = head.next;
+               //三次指针交换
+               head.next = ne.next;
+               ne.next = pre.next;
+               pre.next = ne;
+           }
+
+           return tmp.next;
+       }
+     #+END_SRC
+** 删除链表的倒数第 N 个节点
+   https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
+   https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/solution/dong-hua-tu-jie-leetcode-di-19-hao-wen-ti-shan-chu/
+   #+BEGIN_SRC java
+     public ListNode removeNthFromEnd(ListNode head, int n) {
+         ListNode dummy = new ListNode(0);
+         dummy.next = head;
+         ListNode p = dummy, q = dummy;
+         int i = 0;
+         while(p.next!=null){
+             p = p.next;
+             if(i++>=n){
+                 q = q.next;
+             }
+         }
+         //移除下一节点
+         q.next = q.next.next;
+         return dummy.next;
+     }
+   #+END_SRC
+** 两数相加
+    https://leetcode-cn.com/problems/add-two-numbers/
 You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
 
 You may assume the two numbers do not contain any leading zero, except the number 0 itself.
@@ -325,127 +697,323 @@ Explanation: 342 + 465 = 807.
 #+end_quote
 
 两个链表依次从低位开始相加, 新的链表节点只保存与 10 的余数(Sum%10), Sum/10 累加到高位, 一个链表到末尾节点后以 0 占位, 直至两链表都到末尾节点.
-#+begin_src java
-  private static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-      ListNode listNode = new ListNode(0), curr = listNode;
-      int carry = 0;
-      while (l1 != null || l2 != null || carry != 0) {
-          int sum = (l1 != null ? l1.val : 0) + (l2 != null ? l2.val : 0) + carry;
-          curr.next = new ListNode(sum % 10);
-          curr = curr.next;
-          carry = sum / 10;
+   #+begin_src java
+     private static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+         ListNode listNode = new ListNode(0), curr = listNode;
+         int carry = 0;
+         while (l1 != null || l2 != null || carry != 0) {
+             int sum = (l1 != null ? l1.val : 0) + (l2 != null ? l2.val : 0) + carry;
+             curr.next = new ListNode(sum % 10);
+             curr = curr.next;
+             carry = sum / 10;
 
-          if (l1 != null) l1 = l1.next;
-          if (l2 != null) l2 = l2.next;
+             if (l1 != null) l1 = l1.next;
+             if (l2 != null) l2 = l2.next;
+         }
+         return listNode.next;
+     }
+   #+end_src
+** 两数相加 ii
+   三栈辅助
+   https://leetcode-cn.com/problems/add-two-numbers-ii/
+   #+BEGIN_SRC java
+     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+         if (l1 == null) return l2;
+         if (l2 == null) return l1;
+         Stack<Integer> s1 = new Stack<>(), s2 = new Stack<>(), s3 = new Stack<>();
+         while (l1 != null) {
+             s1.push(l1.val);
+             l1 = l1.next;
+         }
+         while (l2 != null) {
+             s2.push(l2.val);
+             l2 = l2.next;
+         }
+
+         int carry = 0;
+         while (!s1.isEmpty() && !s2.isEmpty()) {
+             int sum = carry + s1.pop() + s2.pop();
+             carry = sum / 10;
+             s3.push(sum % 10);
+         }
+         while (!s1.isEmpty()) {
+             int sum = carry + s1.pop();
+             carry = sum / 10;
+             s3.push(sum % 10);
+         }
+         while (!s2.isEmpty()) {
+             int sum = carry + s2.pop();
+             carry = sum / 10;
+             s3.push(sum % 10);
+         }
+         if (carry>0) s3.push(carry);
+
+         ListNode dummy = new ListNode(0);
+         ListNode head = dummy;
+         while (!s3.isEmpty()) {
+             head.next = new ListNode(s3.pop());
+             head = head.next;
+         }
+         return dummy.next;
+     }
+   #+END_SRC
+
+** 合并两个有序列表
+   https://leetcode-cn.com/problems/merge-two-sorted-lists
+*** 迭代
+   #+BEGIN_SRC java
+     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+         ListNode dummy = new ListNode(0);
+         ListNode curr = dummy;
+         while(l1!=null && l2!=null){
+             if(l1.val<l2.val){
+                 curr.next = l1;
+                 l1 = l1.next;
+             }else{
+                 curr.next = l2;
+                 l2 = l2.next;
+             }
+             curr = curr.next;
+         }
+         curr.next = l1==null? l2 : l1;
+         return dummy.next;
+     }
+   #+END_SRC 
+*** 递归
+    #+BEGIN_SRC java
+      public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+          if(l1==null) return l2;
+          if(l2==null) return l1;
+          if(l1.val<l2.val){
+              l1.next = mergeTwoLists(l1.next, l2);
+              return l1;
+          }else{
+              l2.next = mergeTwoLists(l2.next, l1);
+              return l2;
+          }
       }
-      return listNode.next;
+    #+END_SRC
+*** 拓展--合并两个有序数组
+https://leetcode-cn.com/problems/merge-sorted-array/
+#+BEGIN_SRC java
+  public void merge(int[] nums1, int m, int[] nums2, int n) {
+      int index1 = m-1, index2 = n-1, index = m+n-1;
+      while(index1>=0 && index2>=0){
+          if(nums1[index1]>nums2[index2]){
+              nums1[index] = nums1[index1];
+              index1--;
+              index--;
+          }else{
+              nums1[index] = nums2[index2];
+              index2--;
+              index--;
+          }
+      }
+      System.arraycopy(nums2, 0, nums1, 0, index2+1);
   }
+#+END_SRC
 
-  @ToString
-  static class ListNode {
-      int val;
-      ListNode next;
-      ListNode(int x) {this.val = x;}
-      ListNode(int x, ListNode next){
-          this(x);
-          this.next = next;
+** 合并 K 个有序列表
+   https://leetcode-cn.com/problems/merge-k-sorted-lists/
+*** 优先队列
+    #+BEGIN_SRC java
+      public ListNode mergeKLists(ListNode[] lists) {
+          if (lists.length==0){
+              return null;
+          }
+          ListNode dummy = new ListNode(-1);
+          ListNode curr = dummy;
+          final PriorityQueue<ListNode> queue = new PriorityQueue<>(lists.length, Comparator.comparingInt(l -> l.val));
+          for (ListNode node : lists) {
+              if (node != null) {
+                  queue.add(node);
+              }
+          }
+          while (!queue.isEmpty()){
+              final ListNode pool = queue.poll();
+              curr.next = new ListNode(pool.val);
+              if (pool.next!=null){
+                  queue.add(pool.next);
+              }
+              curr = curr.next;
+          }
+          return dummy.next;
       }
-  }
-#+end_src
+    #+END_SRC
+*** 分治
+    #+BEGIN_SRC java
+      public ListNode mergeKLists(ListNode[] lists) {
+          if (lists.length == 0) return null;
+          if (lists.length == 1) return lists[0];
+          if (lists.length == 2) return mergeTwoLists(lists[0], lists[1]);
 
-------------
-* Linked List Cycle 循环链表
+          int mid = lists.length / 2;
+          ListNode[] l1 = new ListNode[mid];
+          System.arraycopy(lists, 0, l1, 0, mid);
+          ListNode[] l2 = new ListNode[lists.length - mid];
+          System.arraycopy(lists, mid, l2, 0, lists.length - mid);
 
-Given a linked list, determine if it has a cycle in it.
-
-利用快慢两个指针, 如果链表存在环, 那么必然存在某个点快慢两个指针重合.
-#+begin_src java
-  public boolean hasCycle(ListNode head) {
-      if (head == null || head.next == null) {
-          return false;
+          return mergeTwoLists(mergeKLists(l1), mergeKLists(l2));
       }
 
-      ListNode slow = head, fast = head;
-      while(fast != null && fast.next != null){
-          slow = slow.next;
-          fast = fast.next.next;
-          if(slow == fast)    return true;
+      public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+          if (l1 == null) return l2;
+          if (l2 == null) return l1;
+          if (l1.val < l2.val) {
+              l1.next = mergeTwoLists(l1.next, l2);
+              return l1;
+          } else {
+              l2.next = mergeTwoLists(l2.next, l1);
+              return l2;
+          }
       }
-      return false;
-  }
-  class ListNode {
-      int val;
-      ListNode next;
-      ListNode(int x) {
-          val = x;
-          next = null;
-      }
-  }
-#+end_src
+    #+END_SRC
+** 移除链表元素
+   https://leetcode-cn.com/problems/remove-linked-list-elements/
+   #+BEGIN_SRC java
+     public ListNode removeElements(ListNode head, int val) {
+         ListNode dummy = new ListNode(0);
+         dummy.next = head;
+         ListNode pre = dummy, curr = dummy.next;
+         while(curr!=null){
+             if(curr.val==val){
+                 //移除节点
+                 pre.next = curr.next;
+             }else{
+                 pre = pre.next;
+             }
+             curr = curr.next;
+         }
+         return dummy.next;
+     }
+   #+END_SRC
+** 删除排序列表中的重复元素
+   https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/submissions/
+   #+BEGIN_SRC java
+     public ListNode deleteDuplicates(ListNode head) {
+         if(head==null || head.next==null) return head;
+         ListNode dummy = new ListNode(0);
+         dummy.next = head;
+         ListNode pre = head, curr = head.next;
+         while(curr != null){
+             if(pre.val == curr.val){
+                 //移除curr节点
+                 pre.next = curr.next;
+             }else{
+                 pre = pre.next;
+             }
+             curr = curr.next;
+         }
+         return dummy.next;
+     }
+   #+END_SRC
+** 删除排序列表中的重复元素 ii
+   https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/
+   https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/solution/zhi-xing-yong-shi-1-ms-zai-suo-you-java-ti-jia-105/
+   #+BEGIN_SRC java
+     public ListNode deleteDuplicates(ListNode head) {
+         if (head == null || head.next == null) return head;
+         ListNode dummy = new ListNode(0);
+         dummy.next = head;
+         ListNode curr = dummy;
+         while (curr.next != null) {
+             int val = curr.next.val;
+             if (curr.next.next != null && curr.next.next.val == val) {
+                 ListNode tmp = curr.next.next;
+                 while (tmp != null && tmp.val == val) {
+                     tmp = tmp.next;//找到要删除的终点
+                 }
+                 curr.next = tmp;//移除所有重复节点
+             } else {
+                 curr = curr.next;
+             }
+         }
+         return dummy.next;
+     }
+   #+END_SRC
+** 两两交换链表中的节点
+   https://leetcode-cn.com/problems/swap-nodes-in-pairs/
+   #+BEGIN_SRC java
+     public ListNode swapPairs(ListNode head) {
+         if (head==null || head.next==null) return head;
+         ListNode dummy = new ListNode(0);
+         dummy.next = head;
+         ListNode pre = dummy, curr = head, ne;
+         while (curr!=null && curr.next!=null){
+             //交换相邻两节点
+             ne=curr.next;
+             pre.next = ne;
+             curr.next = ne.next;
+             ne.next = curr;
+             //下一轮
+             pre = curr;
+             curr = curr.next;
+         }
+         return dummy.next;
+     }
+   #+END_SRC
+** 排序链表
+   https://leetcode-cn.com/problems/sort-list/
+   #+BEGIN_SRC java
+     public ListNode sortList(ListNode head) {
+         if(head==null || head.next==null) return head;
+         ListNode middle = middle(head);
+         ListNode right = middle.next;
+         middle.next = null;
 
-** 拓展
+         return merge(sortList(head), sortList(right));
+     }
 
-Given a linked list, return the node where the cycle begins. If there is no cycle, return null.
+     public static ListNode middle(ListNode head){
+         if(head==null || head.next==null) return head;
+         ListNode slow = head, fast = head;
+         while(fast.next!=null && fast.next.next!=null){
+             slow = slow.next;
+             fast = fast.next.next;
+         }
+         return slow;
+     }
 
-在判断了存在环的情况下, 设 head 节点到环起点距离为 A, 起点到 slow 节点距离为 B, 环长为 C.
+     public static ListNode merge(ListNode l1, ListNode l2){
+         if(l1==null) return l2;
+         if(l2==null) return l1;
+         if(l1.val<l2.val){
+             l1.next = merge(l1.next, l2);
+             return l1;
+         }else{
+             l2.next = merge(l1, l2.next);
+             return l2;
+         }
+     }
+   #+END_SRC
+** 从链表中删去总和值为零的连续节点
+HashMap 两轮遍历
+https://leetcode-cn.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/solution/java-hashmap-liang-ci-bian-li-ji-ke-by-shane-34/
+   #+BEGIN_SRC java
+     public ListNode removeZeroSumSublists(ListNode head) {
+         ListNode dummy = new ListNode(0);
+         dummy.next = head;
 
-slow 指针移动距离为 A+B, fast 指针移动距离为 A+B+C, 2(A+B) = A+B+C => C = A+B, slow 指针继续移动到起点的距离为 C-B = A, 即 head 与 slow 同步移动, 当 head==slow 时, 即为环的起点.
-#+begin_src java
-public ListNode detectCycle(ListNode head) {
-    if (head == null || head.next == null) {
-        return null;
-    }
-    ListNode slow = head, fast = head;
-    while (fast != null && fast.next != null){
-        slow = slow.next;
-        fast = fast.next.next;
-        if (slow == fast){
-            ListNode s = head;
-            while (s != slow){
-                s = s.next;
-                slow = slow.next;
-            }
-            return s;
-        }
-    }
-    return null;
-}
-#+end_src
+         Map<Integer, ListNode> map = new HashMap<>();
 
-------------
-* intersection-of-two-linked-lists 链表相交
+         // 首次遍历建立 节点处链表和<->节点 哈希表
+         // 若同一和出现多次会覆盖，即记录该sum出现的最后一次节点
+         int sum = 0;
+         for (ListNode d = dummy; d != null; d = d.next) {
+             sum += d.val;
+             map.put(sum, d);
+         }
 
-https://leetcode-cn.com/problems/intersection-of-two-linked-lists/solution/intersection-of-two-linked-lists-shuang-zhi-zhen-l/
-#+begin_src scala
-/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode(int x) {
- *         val = x;
- *         next = null;
- *     }
- * }
- */
-public class Solution {
-    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        /**
-        定义两个指针, 第一轮让两个到达末尾的节点指向另一个链表的头部, 最后如果相遇则为交点(在第一轮移动中恰好抹除了长度差)
-        两个指针等于移动了相同的距离, 有交点就返回, 无交点就是各走了两条指针的长度
-        **/
-        if(headA == null || headB == null) return null;
-        ListNode p1 = headA, p2 = headB;
-        // 在这里第一轮体现在 pA 和 pB 第一次到达尾部会移向另一链表的表头, 而第二轮体现在如果 pA 或 pB 相交就返回交点, 不相交最后就是 null==null
-        while (p1 != p2) {
-            p1 = p1 == null ? headB : p1.next;
-            p2 = p2 == null ? headA : p2.next;
-        }
-        return p1;
-    }
-}
-#+end_src
+         // 第二遍遍历 若当前节点处sum在下一处出现了则表明两结点之间所有节点和为0 直接删除区间所有节点
+         sum = 0;
+         for (ListNode d = dummy; d != null; d = d.next) {
+             sum += d.val;
+             d.next = map.get(sum).next;
+         }
 
+         return dummy.next;
+     }
+   #+END_SRC
 * water and jug  水壶问题
 https://leetcode-cn.com/problems/water-and-jug-problem/
 #+begin_src java
@@ -811,6 +1379,81 @@ n 个人要晚上过桥，在任何时候最多两个人一组过桥，每组要
    x & ~(1<<n)
    #+end_example
 
+** 二进制求和
+https://leetcode-cn.com/problems/add-binary/
+#+BEGIN_SRC java
+  public String addBinary(String a, String b) {
+      StringBuilder sb = new StringBuilder("");
+      int carry = 0;
+    
+      for(int i=a.length()-1, j=b.length()-1; i>=0||j>=0 ;i--,j--){
+          int sum = carry + 
+              (i>=0? a.charAt(i)-'0' : 0) +
+              (j>=0? b.charAt(j)-'0' : 0);
+          sb.append(sum%2);
+          carry = sum/2;
+      }
+      if(carry==1) sb.append('1');
+      return sb.reverse().toString();
+  }
+#+END_SRC
+
+* 无重复字符的最长子串
+https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
+#+BEGIN_SRC java
+  public int lengthOfLongestSubstring(String s) {
+      int len = s.length(), ans = 0;
+      Map<Character, Integer> map = new HashMap<>();
+      for(int end=0, start=0; end<len; end++){
+          if(map.containsKey(s.charAt(end))){
+              start = Math.max(map.get(s.charAt(end)), start);
+          }
+          map.put(s.charAt(end), end+1);
+          ans = Math.max(ans, end-start+1);
+      }
+      return ans;
+  }
+#+END_SRC
+
+* 数组形式的整数加法
+https://leetcode-cn.com/problems/add-to-array-form-of-integer/
+#+BEGIN_SRC java
+  public List<Integer> addToArrayForm(int[] A, int K) {
+      return addToArrayForm(A, A.length-1, K);
+  }
+  public List<Integer> addToArrayForm(int[] A, int end, int carry) {
+      int sum = carry+A[end];
+      A[end] = sum%10;
+      carry = sum/10;
+    
+      if(end==0){
+          List<Integer> res = new ArrayList<>();
+          while(carry>0){
+              res.add(carry%10);
+              carry /= 10;
+          }
+          Collections.reverse(res);
+          for(int i=0; i<A.length; i++){
+              res.add(A[i]);
+          }
+          return res;
+      }else{
+          return addToArrayForm(A, end-1, carry);
+      }
+  }
+#+END_SRC
+
+* 重复的子字符串
+https://leetcode-cn.com/problems/repeated-substring-pattern/
+假设字符串有 n 个子串构成,则拼接后的子串为 2n 个,掐头去尾后为 2n-2 个,如果此时的字符串
+至少包含一个原字符串,则说明至少包含 n 个子串,则 2n-2>=n,n>=2.则说明该字符串是周期性
+结构,最少由两个子串构成.如果一个都不包含,即不包含 n 个子串,则说明 2n-2<n,n<2,即 n 为
+1,也就是不符合周期性结构
+#+BEGIN_SRC java
+  public boolean repeatedSubstringPattern(String s) {
+      return (s+s).substring(1, s.length()*2-1).contains(s);
+  }
+#+END_SRC
 * powx-n
 https://leetcode-cn.com/problems/powx-n/submissions/
 #+begin_src java
@@ -934,6 +1577,29 @@ https://leetcode-cn.com/problems/powx-n/submissions/
       res
     }
   #+END_SRC
+** 拓展--中心扩展法
+#+BEGIN_SRC java
+  public static String longestPalindrome(String s) {
+      if (s == null || s.length() == 0) return "";
+      int start = 0, end = 0;
+      for (int i = 0; i < s.length(); i++) {
+          int len = Math.max(expandAround(s, i, i), expandAround(s, i, i + 1));
+          if (len > end - start) {
+              start = i - (len - 1) / 2;
+              end = i + len / 2;
+          }
+      }
+      return s.substring(start, end + 1);
+  }
+
+  public static int expandAround(String s, int L, int R) {
+      while (L >= 0 && R < s.length() && s.charAt(L) == s.charAt(R)) {
+          L--;
+          R++;
+      }
+      return R - L - 1;
+  }
+#+END_SRC
 * 有效的括号
   https://leetcode-cn.com/problems/valid-parentheses/
   #+BEGIN_SRC java
@@ -1007,3 +1673,216 @@ https://leetcode-cn.com/problems/powx-n/submissions/
       arr(cups, floors)
     }
   #+END_SRC
+* 外观数列
+https://leetcode-cn.com/problems/count-and-say/
+#+BEGIN_SRC java
+  public String countAndSay(int n) {
+      if(n==1) return "1";
+      if(n==2) return "11";
+      String str = countAndSay(n-1);
+
+      char start = str.charAt(0);
+      int count=1;
+      StringBuilder res = new StringBuilder("");
+      for(int i=1; i<str.length(); i++){
+          if(str.charAt(i)==start){
+              count++;
+          }else{
+              res.append(count).append(start);
+              count = 1;
+              start = str.charAt(i);
+          }
+      }
+      res.append(count).append(start);
+      return res.toString();
+  }
+#+END_SRC
+* 有序数组的平方
+https://leetcode-cn.com/problems/squares-of-a-sorted-array/
+双指针
+#+BEGIN_SRC java
+  public int[] sortedSquares(int[] A) {
+      int len = A.length, i = 0;//读取非负数的指针
+      while(i<len && A[i]<0){
+          i++;
+      }
+      int j = i-1;//读取负数的指针
+      int[] res = new int[len];
+      int k = 0;//记录新数组的指针
+      while(i<len && j>=0){
+          res[k++] = A[i]*A[i]<A[j]*A[j]? A[i]*A[i++] : A[j]*A[j--];
+      }
+      while(i<len){
+          res[k++] = A[i]*A[i++];
+      }
+      while(j>=0){
+          res[k++] = A[j]*A[j--];
+      }
+      return res;
+  }
+#+END_SRC
+* 树
+** 相同的树
+https://leetcode-cn.com/problems/same-tree/
+*** 递归
+#+BEGIN_SRC java
+  public boolean isSameTree(TreeNode p, TreeNode q) {
+      if(p==null && q==null) return true;
+      if(p==null || q==null) return false;
+      return p.val==q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+  }
+#+END_SRC
+** 对称二叉树
+https://leetcode-cn.com/problems/symmetric-tree/
+*** 递归
+#+BEGIN_SRC java
+  public boolean isSymmetric(TreeNode root) {
+      return isMirro(root, root);
+  }
+  public boolean isMirro(TreeNode left, TreeNode right){
+      if(left==null && right==null) return true;
+      if(left==null || right==null) return false;
+      return left.val==right.val
+              && isMirro(left.left, right.right)
+              && isMirro(left.right, right.left);
+  }
+#+END_SRC
+*** 迭代
+#+BEGIN_SRC java
+  public boolean isSymmetric(TreeNode root) {
+      Queue<TreeNode> queue = new LinkedList<>();
+      queue.offer(root);
+      queue.offer(root);
+      while(!queue.isEmpty()){
+          TreeNode t1 = queue.poll(), t2 = queue.poll();
+          if(t1==null && t2==null) continue;
+          if(t1==null || t2==null) return false;
+          if(t1.val!=t2.val) return false;
+          queue.offer(t1.left);
+          queue.offer(t2.right);
+          queue.offer(t1.right);
+          queue.offer(t2.left);
+      }
+      return true;
+  }
+#+END_SRC
+** 二叉树层次遍历
+https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
+*** BFS
+#+BEGIN_SRC java
+  public List<List<Integer>> levelOrder(TreeNode root) {
+      if(root==null) return new ArrayList<>();
+      List<List<Integer>> res = new ArrayList<>();
+      LinkedList<TreeNode> queue = new LinkedList<>();
+      queue.offer(root);
+      while(!queue.isEmpty()){
+          int curSize = queue.size();
+          List<Integer> curRes = new ArrayList<>();
+          for(int i=0; i<curSize; i++){
+              TreeNode t = queue.poll();
+              curRes.add(t.val);
+              if(t.left!=null) queue.offer(t.left);
+              if(t.right!=null) queue.offer(t.right);
+          }
+          res.add(curRes);
+      }
+      return res;
+  }
+#+END_SRC
+
+** 二叉树层次遍历 ii
+https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/
+*** BFS
+#+BEGIN_SRC java
+  public List<List<Integer>> levelOrderBottom(TreeNode root) {
+      if(root==null) return new ArrayList<>();
+      LinkedList<List<Integer>> res = new LinkedList<>();
+
+      LinkedList<TreeNode> queue = new LinkedList<>();
+      queue.offer(root);
+      int max = 1;//找最大宽度
+      while(!queue.isEmpty()){
+          int size = queue.size();//本层宽度
+          List<Integer> curLevel = new ArrayList<>();
+          max = Math.max(max, size);
+          for(int i=0;i<size;i++){
+              TreeNode t = queue.poll();
+              curLevel.add(t.val);
+              if(t.left!=null) queue.offer(t.left);
+              if(t.right!=null) queue.offer(t.right);
+          }
+          res.addFirst(curLevel);
+      }
+      return res;
+  }
+#+END_SRC
+
+** 二叉树最小深度
+https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/
+#+BEGIN_SRC java
+  public int minDepth(TreeNode root) {
+      if(root==null) return 0;
+      //1.左孩子和有孩子都为空的情况，说明到达了叶子节点，直接返回1即可
+      if(root.left==null && root.right==null) return 1;
+      //2.如果左孩子和由孩子其中一个为空，那么需要返回比较大的那个孩子的深度
+      int le = minDepth(root.left);
+      int ri = minDepth(root.right);
+      if(root.left==null || root.right==null) return le+ri+1;
+      //3.最后一种情况，也就是左右孩子都不为空，返回最小深度+1即可
+      return Math.min(le,ri)+1;
+  }
+#+END_SRC
+
+** 有序数组转换为二叉树
+https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/
+#+BEGIN_SRC java
+  public TreeNode sortedArrayToBST(int[] nums) {
+      if(nums==null || nums.length==0) return null;
+      return merge(nums, 0, nums.length-1);
+  }
+
+  public TreeNode merge(int[] nums, int L, int R){
+      if(L>R) return null;
+      if(L==R) return new TreeNode(nums[L]);
+      int mid = L+(R-L)/2;
+      TreeNode root = new TreeNode(nums[mid]);
+      root.left = merge(nums, L, mid-1);
+      root.right = merge(nums, mid+1, R);
+      return root;
+  }
+#+END_SRC
+
+** 平衡二叉树
+https://leetcode-cn.com/problems/balanced-binary-tree/
+
+*** 自底至顶 Bottom-Up
+#+BEGIN_SRC java
+  public boolean isBalanced(TreeNode root) {
+      return depth(root)!=-1;
+  }
+  public int depth(TreeNode root){
+      if(root==null) return 0;
+      int left = depth(root.left);
+      if(left==-1) return -1;
+      int right = depth(root.right);
+      if(right==-1) return -1;
+      return Math.abs(left-right)<2? Math.max(left,right)+1:-1;
+  }
+#+END_SRC
+
+*** 自顶至底 Top-Down
+#+BEGIN_SRC java
+  public boolean isBalanced(TreeNode root) {
+      if(root==null) return true;
+      return Math.abs(depth(root.left)-depth(root.right))<=1 
+          && isBalanced(root.left) 
+          && isBalanced(root.right);
+  }
+
+  public int depth(TreeNode root){
+      if(root==null) return 0;
+      return Math.max(depth(root.left), depth(root.right))+1;
+  }
+#+END_SRC
+
+
