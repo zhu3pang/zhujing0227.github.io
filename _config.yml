@@ -7,7 +7,7 @@ highlighter: rouge
 markdown: kramdown
 disqus: zhujing0227
 disqus_username: zhujing0227
-google_analytics: 
+google_analytics: UA-158633653-1
 title: ZhuJing's Blog
 profile: /assets/profile.jpg
 
