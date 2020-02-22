@@ -117,7 +117,6 @@ comments: true
     - [[#递归-3][递归]]
     - [[#迭代-2][迭代]]
   - [[#路径总和-iii][路径总和 iii]]
-  - [[#二叉树层次遍历-1][二叉树层次遍历]]
   - [[#二叉树前序遍历][二叉树前序遍历]]
   - [[#二叉树中序遍历][二叉树中序遍历]]
   - [[#二叉树后序遍历][二叉树后序遍历]]
@@ -2108,28 +2107,6 @@ https://leetcode-cn.com/problems/path-sum-iii/
       int n1 = pathSum(root.left, sum, array, p+1);
       int n2 = pathSum(root.right, sum, array, p+1);
       return n+n1+n2;
-  }
-#+END_SRC
-
-** 二叉树层次遍历
-#+BEGIN_SRC java
-  public List<List<Integer>> levelOrder(TreeNode root) {
-      if(root==null) return new ArrayList<>();
-      List<List<Integer>> res = new ArrayList<>();
-      LinkedList<TreeNode> queue = new LinkedList<>();
-      queue.offer(root);
-      while(!queue.isEmpty()){
-          int curSize = queue.size();
-          List<Integer> curRes = new ArrayList<>();
-          for(int i=0; i<curSize; i++){
-              TreeNode t = queue.poll();
-              curRes.add(t.val);
-              if(t.left!=null) queue.offer(t.left);
-              if(t.right!=null) queue.offer(t.right);
-          }
-          res.add(curRes);
-      }
-      return res;
   }
 #+END_SRC
 
