@@ -1,0 +1,3 @@
+[submodule "zhujing-resume"]
+	path = nimo-markdown-cv
+	url = https://github.com/zhujing0227/nimo-markdown-cv.git
