@@ -125,6 +125,7 @@ comments: true
   - [[#修剪二叉搜索树][修剪二叉搜索树]]
   - [[#二叉搜索树转换为累加树][二叉搜索树转换为累加树]]
   - [[#另一个树的子树][另一个树的子树]]
+  - [[#删除二叉搜索树的节点][删除二叉搜索树的节点]]
 - [[#杨辉三角][杨辉三角]]
   - [[#递归-4][递归]]
   - [[#迭代-3][迭代]]
@@ -2149,7 +2150,6 @@ public List<Integer> inorderTraversal(TreeNode root) {
 }
 #+END_SRC
 
-
 ** 二叉树后序遍历
 https://leetcode-cn.com/problems/binary-tree-postorder-traversal/
 #+BEGIN_SRC java
@@ -2208,7 +2208,6 @@ https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/
       return rr;
   }
 #+END_SRC
-
 
 ** 二叉搜索树的第 K 大节点
 https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-di-kda-jie-dian-lcof/
@@ -2281,6 +2280,44 @@ https://leetcode-cn.com/problems/subtree-of-another-tree/
   }
 #+END_SRC
 
+** 删除二叉搜索树的节点
+https://leetcode-cn.com/problems/delete-node-in-a-bst/
+#+BEGIN_SRC java
+  //后继节点,代表的是中序遍历序列的下一个节点。即比当前节点大的最小节点，简称后继节点
+  public int succesor(TreeNode root){
+      root = root.right;
+      while(root.left!=null) root = root.left;
+      return root.val;
+  }
+  //前驱节点,代表的是中序遍历序列的前一个节点。即比当前节点小的最大节点，简称前驱节点
+  public int pre(TreeNode root){
+      root = root.left;
+      while(root.right!=null) root=root.right;
+      return root.val;
+  }
+
+  public TreeNode deleteNode(TreeNode root, int key) {
+      if(root==null) return null;
+      if(root.val==key) {
+          //get it, delete
+          if(root.left==null && root.right==null) return null;
+          if(root.right!=null) {
+              root.val = succesor(root);
+              root.right=deleteNode(root.right, root.val);
+          }else{
+              root.val = pre(root);
+              root.left = deleteNode(root.left, root.val);
+          }
+      }
+      else if(root.val<key) {
+          root.right = deleteNode(root.right, key);
+      }
+      else {
+          root.left = deleteNode(root.left, key);
+      }
+      return root;
+  }
+#+END_SRC
 
 * 杨辉三角
 https://leetcode-cn.com/problems/pascals-triangle/

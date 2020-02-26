@@ -33,7 +33,7 @@ comments: true
 * 伸展树的操作
 
 ** 旋转
-   参考[红黑树的旋转](/datastructure/2017/12/25/红黑树/)
+   参考[[/红黑树][红黑树的旋转]]
 
 ** 插入
    按二叉树插入的操作将节点插入正确位置, 再对该节点进行 spaly 操作, 使之成为根节点.
@@ -281,16 +281,19 @@ comments: true
 ** 测试
 
 *** 初始化节点[0..9]
-    ![](/assets/img/source/splay-tree/splay-tree-init.png)
+[[/assets/img/source/splay-tree/splay-tree-init.png]]
 
 *** 删除节点 2
-    ![](/assets/img/source/splay-tree/splay-tree-delete2.png)
+[[/assets/img/source/splay-tree/splay-tree-delete2.png]]
 
 *** 删除节点 8
-    ![](/assets/img/source/splay-tree/splay-tree-delete8.png)
+[[/assets/img/source/splay-tree/splay-tree-delete8.png]]
 
 * 参考:
-
+#+begin_quote
 [[https://zh.wikipedia.org/wiki/伸展树][伸展树]]
+
 [[http://blog.csdn.net/u014634338/article/details/49586689][伸展树(Splay tree)图解与实现]]
+
 [[./AVL 树][AVL 树 旋转]]
+#+end_quote
