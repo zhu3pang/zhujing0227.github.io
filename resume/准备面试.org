@@ -180,9 +180,7 @@ final Node<K,V>[] resize() {
     return newTab;
 }
 #+END_SRC
-#+begin_example
 [[https://awps-assets.meituan.net/mit-x/blog-images-bundle-2016/4d8022db.png][扩容前后key1和key2两种key确定索引位置]]
-#+end_example
 ** ConcurrentHashMap
 https://swenfang.github.io/2018/06/03/Java%208%20ConcurrentHashMap%20%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/
 *** volatile
@@ -199,7 +197,7 @@ https://swenfang.github.io/2018/06/03/Java%208%20ConcurrentHashMap%20%E6%BA%90%E
 由于 Java 内存模型(JMM)规定，所有的变量都存放在主内存中，而每个线程都有着自己的工
 作内存(高速缓存)；线程在工作时，需要将主内存中的数据拷贝到工作内存中。这样对数据
 的任何操作都是基于工作内存(效率提高)，并且不能直接操作主内存以及其他线程工作内存
-中的数据，之后再将更新之后的数据刷新到主内存中；
+中的数据，之后再将更新之后的数据刷新到主内存中。
 1. 这里所提到的主内存可以简单认为是堆内存，而工作内存则可以认为是栈内存；
 2. 当一个变量被 volatile 修饰时，任何线程对它的写操作都会立即刷新到主内存中，并
    且会强制让缓存了该变量的线程中的数据清空，必须从主内存重新读取最新数据；
@@ -781,7 +779,7 @@ http://www.jasongj.com/java/threadlocal/
     return t.threadLocals;
   }
 #+END_SRC
-*** 防止内存泄漏
+***  防止内存泄漏
 对于已经不再被使用且已被回收的 ThreadLocal 对象，它在每个线程内对应的实例由于被
 线程的 ThreadLocalMap 的 Entry 强引用，无法被回收，可能会造成内存泄漏。
 
@@ -889,7 +887,7 @@ https://mp.weixin.qq.com/s?__biz=MzU0OTk3ODQ3Ng==&mid=2247484094&idx=1&sn=b33716
    #+end_example
 3. 如何解决
    #+begin_example
-    击穿现象是多个线程同时去查询数据库的这条数据，那么我们可以在第一个查询数据的
+   击穿现象是多个线程同时去查询数据库的这条数据，那么我们可以在第一个查询数据的
    请求上使用一个 互斥锁来锁住它。其他的线程走到这一步拿不到锁就等着，等第一个线
    程查询到了数据，然后做缓存。后面的线程进来发现已经有缓存了，就直接走缓存。
    #+end_example
@@ -907,6 +905,36 @@ https://mp.weixin.qq.com/s?__biz=MzU0OTk3ODQ3Ng==&mid=2247484094&idx=1&sn=b33716
 对于一些热点数据来说, 当缓存失效以后会有大量的请求打到数据库, 可能导致数据库崩溃
 1. 设置不同的失效时间
 2. 互斥锁
+** Redis 数据结构
+1. String
+   - int 节省内存，Redis 默认缓存了 10000 个整型值
+   - embstr 长度<=44, 空间分配和释放次数从 raw 的两次降为一次
+   - raw 长度>44, 没有优化
+2. Set
+   Set 是一个特殊的 value 为空的 Hash
+   - intset Set 集合中必须是 64 位有符号的十进制整型，元素个数不能超过
+     =set-max-intset-entries= （512）配置
+   - hashtable
+3. Sorted-Set
+   - ziplist 元素个数小于 =zset-max-ziplist-entries= （128）配置，所有值都小于
+     =zset-max-ziplist-value= （64）配置
+   - skiplist
+4. List
+   - linkedlist
+   - ziplist
+5. Hash
+   - ziplist 元素个数小于 =hash-max-ziplist-entries=（512） 配置，所有值都小于
+     =hash-max-ziplist-value= （64b）配置
+   - hashtable
+6. BitMap String 数据结构，只不过操作的粒度变成了位，即 bit。因为 String 类型最大长
+   度为 512MB，所以 bitmap 最多可以存储 2^32 个 bit。
+7. GeoHash
+8. HyperLogLog
+9. Streams
+** Redis 删除策略
+1. 被动删除 读写一个已过期的 key 时触发
+2. 主动删除 定期巡检删除过期的 key，直到占比降到 25%以下，一般是采用 LRU 策略
+3. 内存使用达到阈值时触发
 * MQ
 | 特性                   | ActiveMQ        | RabbitMQ       | RocketMQ          | Kafka                 |
 |------------------------+-----------------+----------------+-------------------+-----------------------|
@@ -952,4 +980,121 @@ https://mp.weixin.qq.com/s?__biz=MzU0OTk3ODQ3Ng==&mid=2247484094&idx=1&sn=b33716
    这个 id 写 Redis。如果消费过了，那你就别处理了，保证别重复处理相同的消息即可。
 4. 比如基于数据库的唯一键来保证重复数据不会重复插入多条。因为有唯一键约束了，重
    复数据插入只会报错，不会导致数据库中出现脏数据。
+* ElasticSearch
+version:5.6.3 文档数:77 亿 3T 服务器:18/500G/16G
+** ES 的分布式架构原理
+底层基于 Lucene, 在多台机器上启动多个 es 进程实例, 组成一个 es 集群. 一个索引拆分成多
+个 shard, 每个 shard 存储部分数据, 支持横向扩展, 提高性能. 每个 shard 的数据会有至少
+一个 =replica shard=, =primary shard= 写入数据之后会将数据同步到其他 =replica
+shard= 上去. 
+
+es 集群多个节点，会自动选举一个节点为 master 节点，这个 master 节点
+其实就是干一些管理的工作的，比如维护索引元数据、负责切换 primary shard 和
+replica shard 身份等。要是 master 节点宕机了，那么会重新选举一个节点为 master 节
+点。
+
+如果是非 master 节点宕机了，那么会由 master 节点，让那个宕机节点上的 primary
+shard 的身份转移到其他机器上的 replica shard。接着你要是修复了那个宕机机器，重启
+了之后，master 节点会控制将缺失的 replica shard 分配过去，同步后续修改的数据之类
+的，让集群恢复正常。
+** ES 的写入过程
+1. 客户端发送请求到 =coordinating node= 协调节点;
+2. =coordinating node= 对 document 进行 *路由*, 将请求转发给有对应 =primary shard=
+   的节点;
+3. =primary shard= 处理请求, 然后将数据同步到 =replica shard=;
+4. =coordinating node= 返回响应结果给客户端.
+** ES 的查询过程
+*** 通过 doc id 查询
+1. 客户端发送请求到 =coordinating node=;
+2. =coordinating node= 使用 =round-robin= 随机轮询算法对 =doc id= 进行哈希路由,
+   随机选一个 shard 转发请求;
+3. 接收请求的 node 返回 document 给 =coordinating node=;
+4. =coordinating node= 返回 document 给客户端.
+** ES 的搜索过程
+1. 客户端发送请求到 =coordinating node=;
+2. =coordinating node= 将请求发送到每个分片的 =primary shard= 或者 =replica shard=;
+3. 查询阶段: 每个 shard 将自己搜索到的 =doc id= 发送给 =coordinating node=, 协调节
+   点进行数据的合并、排序、分页等操作, 产出最终结果;
+4. fetch 阶段: 由协调节点根据 =doc id= 去各个节点上拉取实际的 =document=, 最终返
+   回给客户端;
+** ES 写数据底层原理
+file:images/es-write-detail.png
+1. =primary shard= 同时写入内存 buffer 和 translog;
+2. 每隔一秒或 buffer 满时, buffer 中的数据会 refresh 到 segment 中, 而后进入 os cache,
+   一旦 segment 进入 os cache, 数据就可以被搜索到, =refresh时间可以手动设置, 也可以
+   手动触发refresh=;
+3. 清空 buffer, translog 不处理;
+4. 重复 1-3, translog 不断增大, 每 30 分钟或者 translog 太大时触发 commit 操作;
+5. 将 buffer 中的内容 refresh 到 segment, 并清空 buffer;
+6. 将一个 commit point 文件写入磁盘, 标识此次 commit 对应的 segment;
+7. 执行 fsync 将 os cache 中的数据强制刷新到磁盘;
+8. 删除 translog 文件;
+
+translog 其实也是先写入 os cache 的，默认每隔 5 秒刷一次到磁盘中去，所以默认情况
+下，可能有 5 秒的数据会仅仅停留在 buffer 或者 translog 文件的 os cache 中，如果
+此时机器挂了，会丢失 5 秒钟的数据。但是这样性能比较好，最多丢 5 秒的数据。也可以
+将 translog 设置成每次写操作必须是直接 fsync 到磁盘，但是性能会差很多。
+** ES 删除/更新数据底层原理
+如果是删除操作，commit 的时候会生成一个 .del 文件，里面将某个 doc 标识为 deleted
+状态，那么搜索的时候根据 .del 文件就知道这个 doc 是否被删除了。
+
+如果是更新操作，就是将原来的 doc 标识为 deleted 状态，然后新写入一条数据。
+
+buffer 每 refresh 一次，就会产生一个 segment file，所以默认情况下是 1 秒钟一个
+segment file，这样下来 segment file 会越来越多，此时会定期执行 merge。每次 merge
+的时候，会将多个 segment file 合并成一个，同时这里会将标识为 deleted 的 doc 给物
+理删除掉，然后将新的 segment file 写入磁盘，这里会写一个 commit point，标识所有
+新的 segment file，然后打开 segment file 供搜索使用，同时删除旧的 segment file。
+** ES 查询性能优化
+*** filesystem cache
+es 的搜索引擎严重依赖于底层的 filesystem, 尽量将索引的数据大小控制在 =filesystem
+cache= 的大小内, 这样查询几乎是走内存搜索, 性能很高。实际应用中使用 =es+hbase=
+的架构，es 中只存储用于搜索的字段，其他字段存在 hbase 中。可以说下自己在实际应用
+中的改造。
+*** 数据预热
+缓存预热子系统，就是对热数据每隔一段时间，就提前访问一下，让数据进入 filesystem
+cache 里面去。
+*** 冷热分离
+冷数据写入一个索引中，然后热数据写入另外一个索引中，这样可以确保热数据在被预热之
+后，尽量都让他们留在 filesystem os cache 里
+*** 分页性能优化
+es 的分页操作需要分别从每个 shard 拉取 =offset+limit= 数量的数据，然后统一到协调节
+点进行排序分页的操作，深翻页性能严重下降。可以通过 =scroll api= 获取下一页，唯一
+的问题是不能跳页。
+* 零拷贝
+** 未使用零拷贝时
+四次上下文切换，两次 DMA(Direct Memory Access)拷贝，两次 CPU 拷贝。
+#+BEGIN_SRC java
+File.read(file, buf, len);
+Socket.send(socket, buf, len);
+#+END_SRC
+[[file:./images/zero-copy-be.webp]]
+1. 应用程序中调用 read() 方法，这里会涉及到一次上下文切换（用户态->内核态），底
+   层采用 DMA（direct memory access）读取磁盘的文件，并把内容存储到内核地址空间的
+   读取缓存区。
+2. 由于应用程序无法访问内核地址空间的数据，如果应用程序要操作这些数据，得把这些
+   内容从读取缓冲区拷贝到用户缓冲区。 read() 调用的返回引发一次上下文切换（内核
+   态->用户态），现在数据已经被拷贝到了用户地址空间缓冲区，如果有需要，可以操作
+   修改这些内容。
+3. 我们最终目的是把这个文件内容通过 Socket 传到另一个服务中，调用 Socket 的 send()方
+   法，又涉及到一次上下文切换（用户态->内核态），同时，文件内容被进行第三次拷贝，
+   这次的缓冲区与目标套接字相关联，与读取缓冲区无关。
+4. send()调用返回，引发第四次的上下文切换，同时进行第四次拷贝，DMA 把数据从目标套
+   接字相关的缓存区传到协议引擎进行发送。
+** transferTo
+两次上下文切换，两次 DMA 拷贝，一次 CPU 拷贝
+#+BEGIN_SRC java
+public void transferTo(long position, long count, WritableByteChannel target);
+#+END_SRC
+file:./images/zero-copy-1.webp
+** DMA 收集
+两次上下文切换，两次 DMA 拷贝，消除最后一次 CPU 拷贝。
+1. transferTo() 方法使用 DMA 将文件内容拷贝到内核读取缓冲区。
+2. 避免了内容的整体拷贝，只把包含数据位置和长度信息的描述符追加到套接字缓冲区，
+   DMA 引擎直接把数据从内核缓冲区传到协议引擎，从而消除了最后一次 CPU 参与的拷贝
+   动作。
+* MySQL
+** 加锁机制
+https://github.com/hedengcheng/tech/blob/master/database/MySQL/MySQL%20%E5%8A%A0%E9%94%81%E5%A4%84%E7%90%86%E5%88%86%E6%9E%90.pdf
+
 
