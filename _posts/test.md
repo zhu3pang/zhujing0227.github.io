@@ -1,3 +1,7 @@
+```{=org}
+#+BIND: org-html-link-home "https://zhujing0227.github.io/images"
+```
+```{=md}
 ---
 layout: post
 title: 操作系统概论
@@ -5,10 +9,8 @@ categories: os
 tags: [os]
 comments: true
 ---
-
-
+```
 # 绪论
-
 
 ## What is OS
 
@@ -18,25 +20,21 @@ comments: true
 -   资源管理分配
 -   资源监控
 
-
 ## What is a good OS
 
 -   方便
 -   硬件的高效利用
 -   整体可靠、稳定、安全
 
-
 # 操作系统结构
-
 
 ## 图形接口
 
-
 ## System Call
-
 
 # 进程
 
+用户级线程、内核级线程
 
 ## 进程的状态
 
@@ -46,47 +44,47 @@ comments: true
 4.  waiting
 5.  terminated
 
-
 ## PCB
 
-进程控制块. [进程描述符](https://blog.csdn.net/gatieme/article/details/51383272)
+进程控制块.
+[进程描述符](https://blog.csdn.net/gatieme/article/details/51383272)
 基于『局部性原理』操作系统一般是使用数组去管理所有的进程.
-
 
 ## 进程的创建
 
-
 ### fork()
 
-fork 出来的子进程除了进程号以外，其他与父进程完全一样。下面的代码，父进程等待子进
+fork
+出来的子进程除了进程号以外，其他与父进程完全一样。下面的代码，父进程等待子进
 程结束后打印一句话后退出。
 
-    #include <sys/types.h>
-    #include <stdio.h>
-    #include <unistd.h>
-    #include <stdlib.h>
-    
-    int main()
-    {
-        pid_t pid;
-        /* fork another process */
-        pid = fork();
-        printf("Child");
-        sleep(1);
-        if(pid < 0){/* error occurred */
-            fprintf(stderr, "fork error");
-            exit(-1);
-        }
-        else if(pid == 0){/* child process */
-            execlp("/usr/bin/top", "top", NULL);
-        }
-        else {/* parent process */
-            wait(NULL);
-            printf("Complete Child\n");
-            exit(0);
-        }
-    }  
+``` {.c}
+#include <sys/types.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 
+int main()
+{
+    pid_t pid;
+    /* fork another process */
+    pid = fork();
+    printf("Child");
+    sleep(1);
+    if(pid < 0){/* error occurred */
+        fprintf(stderr, "fork error");
+        exit(-1);
+    }
+    else if(pid == 0){/* child process */
+        execlp("/usr/bin/top", "top", NULL);
+    }
+    else {/* parent process */
+        wait(NULL);
+        printf("Complete Child\n");
+        exit(0);
+    }
+}  
+```
 
 ## 进程的协作
 
@@ -130,7 +128,7 @@ fork 出来的子进程除了进程号以外，其他与父进程完全一样。
 
 Concurrent access to shared data may crack data. producer:
 
-```
+``` {.c}
   while(true){
   while(count==BUFFER_SIZE)
     ;
@@ -141,7 +139,7 @@ Concurrent access to shared data may crack data. producer:
 
 consumer:
 
-```
+``` {.c}
 while(true){
   while(count==0)
     ;
@@ -151,4 +149,3 @@ while(true){
 ```
 
 # 
-

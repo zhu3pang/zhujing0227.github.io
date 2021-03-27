@@ -31,6 +31,8 @@ comments: true
 ** 图形接口
 ** System Call
 * 进程
+   用户级线程、内核级线程
+
 ** 进程的状态
 1. new
 2. ready
@@ -71,3 +73,49 @@ fork 出来的子进程除了进程号以外，其他与父进程完全一样。
       }
   }  
 #+END_SRC
+**  进程的协作
+ 1. 消息传递
+    - 建立通讯链路后通过下面的系统调用实现 posix: send recieve
+    - 没有同步的问题
+ 2. 共享内存
+    - 操作系统禁止进程间共享内存，两个进程要通过复杂的系统调用才能实现。
+    - 同步问题，don't write to the same location simultaneously.
+    - 不是所有的操作系统都支持共享内存
+    - posix: shmget shmat shmdt shmctl
+**  进程的调度
+   总体原则是让 CPU 吞吐率最大, 让进程的总等待时间最短.  抢占式:preemptive, 非抢占式:non-preemptive
+   1. 先来先服务
+   2. 最短作业优先, Shortest-Job-First(SJF)
+   3. 最短剩余时间优先, Shortest-Remaining-Time-First(SRTM) 
+ 实现策略:
+*** 优先级调度
+    随时间的推移逐步提高进程的优先级, 解决低优先级永远无法获取时间片的问题
+*** 时间片轮转法
+*** 时间片轮转发+优先级调度
+*** 多级反馈队列 Multi-Feedback-Queue
+     现在操作系统大多采用的实现
+** 多 CPU 调度
+    每一个核任意时刻只能运行一个进程
+**  进程的同步
+   Concurrent access to shared data may crack data.
+   producer:
+   #+BEGIN_SRC c 
+       while(true){
+       while(count==BUFFER_SIZE)
+         ;
+       buffer[count]=out;
+       count++;
+     }
+  #+END_SRC
+   consumer:
+#+BEGIN_SRC c
+  while(true){
+    while(count==0)
+      ;
+    in = buffer[count-1];
+    count--;
+  }
+#+END_SRC
+
+
+* 
