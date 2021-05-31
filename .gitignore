@@ -6,3 +6,4 @@ Gemfile.lock
 vendor/
 *.out
 .jekyll-metadata
+.jekyll-cache/
