@@ -1,0 +1,64 @@
+version: '3.1'
+
+services:
+  ck1:
+    image: zhujing0227/centos-local:latest
+    container_name: ck1
+    platform: linux/amd64
+    network_mode: bridge
+    restart: always
+    hostname: ck1
+    extra_hosts:
+      ck1: 172.18.0.2
+      ck2: 172.18.0.3
+      ck3: 172.18.0.4
+    volumes:
+      - /Users/zhujing/CLionProjects/ClickHouse:/root/ClickHouse
+    networks:
+      default:
+        ipv4_address: 172.18.0.2
+
+  ck2:
+    image: zhujing0227/centos-local:latest
+    container_name: ck2
+    platform: linux/amd64
+    network_mode: bridge
+    restart: always
+    hostname: ck2
+    extra_hosts:
+      ck1: 172.18.0.2
+      ck2: 172.18.0.3
+      ck3: 172.18.0.4
+    volumes:
+      - /Users/zhujing/CLionProjects/ClickHouse:/root/ClickHouse
+    networks:
+      default:
+        ipv4_address: 172.18.0.3
+
+  ck3:
+    image: zhujing0227/centos-local:latest
+    container_name: ck3
+    platform: linux/amd64
+    network_mode: bridge
+    restart: always
+    hostname: ck3
+    extra_hosts:
+      ck1: 172.18.0.2
+      ck2: 172.18.0.3
+      ck3: 172.18.0.4
+    volumes:
+      - /Users/zhujing/CLionProjects/ClickHouse:/root/ClickHouse
+    networks:
+      default:
+        ipv4_address: 172.18.0.4
+
+networks:
+  default:
+      external:
+          name: zoo-cluster_ck-net
+  # ck-net:
+  #   driver: bridge
+  #   ipam:
+  #    config:
+  #      - subnet: 172.18.0.1/16
+  #        gateway: 172.18.0.1
